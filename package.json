@@ -1,8 +1,8 @@
 {
-  "name": "react-menu-buffer",
+  "name": "react-aim",
   "author": "Gabriel Bull",
   "version": "0.1.0",
-  "description": "Fire mouse events on menus and submenus that takes into account the user's cursor aim",
+  "description": "Determine the cursor aim for triggering mouse events.",
   "main": "./lib/index.js",
   "keywords": [
     "react",

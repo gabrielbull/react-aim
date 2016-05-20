@@ -1,14 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 export default function (...args) {
   return function (WrappedComponent) {
     return class extends Component {
       render() {
-        return (
-          <div>
-            <WrappedComponent {...this.props}/>
-          </div>
-        );
+        return <WrappedComponent {...this.props}/>;
       }
     };
   }
