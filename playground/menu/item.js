@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import source from '../src/item';
+import source from '../../src/item';
 import Submenu from './submenu';
 
 const style = {
@@ -33,7 +33,7 @@ class Item extends Component {
     let submenu;
     if (this.state.over) {
       componentStyle.background = 'blue';
-      submenu = <Submenu/>;
+      submenu = <Submenu ref="submenu"/>;
     }
 
     return (

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import menu from '../src/menu';
+import menu from '../../src/menu';
 import Item from './item';
 
 const style = {
