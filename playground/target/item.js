@@ -9,8 +9,14 @@ import target from '../../src/target';
     mouseLeave: (props, component) => {
       console.log('mouse leave');
     },
-    mouseAiming: (props, component) => {
-      console.log('mouse aiming');
+    aimMove: (props, component, distance) => {
+      component.setState({ distance });
+    },
+    aimStart: (props, component, distance) => {
+      component.setState({ distance, maxDistance: distance });
+    },
+    aimStop: (props, component) => {
+      component.setState({ distance: null, maxDistance: null });
     }
   }
 )
@@ -23,6 +29,11 @@ class Item extends Component {
     color: PropTypes.string
   };
 
+  constructor() {
+    super();
+    this.state = { distance: null, maxDistance: null }
+  }
+
   render() {
     const style = {
       position: 'absolute',
@@ -30,8 +41,13 @@ class Item extends Component {
       left: this.props.left + 'px',
       width: this.props.width + 'px',
       height: this.props.height + 'px',
-      backgroundColor: this.props.color
+      backgroundColor: 'rgb(0, 0, 0)'
     };
+
+    if (this.state.distance) {
+      style.backgroundColor = 'rgb(' + (255 - Math.round(255 / this.state.maxDistance * this.state.distance)) + ', 0, 0)';
+      console.log(style.backgroundColor);
+    }
 
     return (
       <div style={style}/>

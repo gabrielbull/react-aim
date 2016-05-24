@@ -1,4 +1,5 @@
 import ReactDOM from 'react-dom';
+import aiming from './aim';
 
 class Monitor {
   mousePosition;
@@ -17,6 +18,13 @@ class Monitor {
 
   checkAim(e) {
     this.targets.forEach(([target, element]) => {
+      const distance = aiming(e, this.mousePosition, this.prevMousePosition, element);
+      if (distance === true) {
+      } else if (distance) {
+        target.triggerAimMove(distance);
+      } else {
+        target.triggerAimStop();
+      }
     });
   }
 
