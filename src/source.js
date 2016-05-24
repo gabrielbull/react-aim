@@ -3,20 +3,15 @@ import ReactDOM from 'react-dom';
 import mouseOver from './utils/mouseOver';
 import monitor from './monitor'
 
-export default function (target, spec, collect) {
+export default function (target, spec) {
   return function (WrappedComponent) {
     return class extends Component {
-      static contextTypes = {
-        bufferMenu_Menu: PropTypes.object
-      };
-
       isOver = false;
 
       constructor() {
         super();
         this.target = target;
         this.spec = spec;
-        //this.collect = collect;
       }
 
       componentDidMount() {
@@ -46,7 +41,6 @@ export default function (target, spec, collect) {
         if (this.isOver && target) {
           monitor.isAimingTarget(this, target);
         }
-
 
         if (mouseOver(e, this)) {
           if (!this.isOver) {

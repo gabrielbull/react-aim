@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
+import CornersObjects from './cornersObjects/cornersObjects';
+import CornersMouse from './cornersMouse/cornersMouse';
 import Menu from './menu/menu';
-import Corners from './corners/corners';
+import Target from './target/target';
 
 const style = {
   zIndex: '1000',
@@ -27,8 +29,10 @@ class Playground extends Component {
   render() {
     let example;
     switch(this.state.example) {
-    case '1': example = <Corners/>; break;
-    case '2': example = <Menu/>; break;
+    case '1': example = <CornersObjects/>; break;
+    case '2': example = <CornersMouse/>; break;
+    case '3': example = <Menu/>; break;
+    case '4': example = <Target/>; break;
     }
 
     return (
@@ -36,12 +40,22 @@ class Playground extends Component {
         <div style={style}>
           <label>
             <input type="radio" name="example" value="1" checked={this.state.example === '1'} onChange={() => this.change('1')}/>
-            Corners
+            Corners Objects
           </label>
           <br/>
           <label>
             <input type="radio" name="example" value="2" checked={this.state.example === '2'} onChange={() => this.change('2')}/>
+            Corners Mouse
+          </label>
+          <br/>
+          <label>
+            <input type="radio" name="example" value="3" checked={this.state.example === '3'} onChange={() => this.change('3')}/>
             Menu
+          </label>
+          <br/>
+          <label>
+            <input type="radio" name="example" value="4" checked={this.state.example === '4'} onChange={() => this.change('4')}/>
+            Target
           </label>
         </div>
 

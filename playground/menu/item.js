@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import source from '../../src/item';
+import source from '../../src/source';
 import Submenu from './submenu';
 
 const style = {
@@ -17,10 +17,7 @@ const style = {
     mouseLeave: (props, component) => {
       component.setState({ over: false });
     }
-  },
-  (monitor) => ({
-    isOver: monitor.isOver()
-  })
+  }
 )
 class Item extends Component {
   constructor() {

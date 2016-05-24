@@ -5,7 +5,16 @@ function inside(source, target) {
 }
 
 export function lines(source, target) {
-  source = source.getBoundingClientRect();
+  if (source instanceof Event) {
+    source = {
+      left: source.pageX,
+      top: source.pageY,
+      width: 0,
+      height: 0
+    };
+  } else {
+    source = source.getBoundingClientRect();
+  }
   target = target.getBoundingClientRect();
 
   let point1, point2;
@@ -74,3 +83,5 @@ export function coordinates(lines, source, target) {
 
   return finalLines;
 }
+
+export default lines;

@@ -1,4 +1,5 @@
 import ReactDOM from 'react-dom';
+import findCorners from './corners';
 
 const TOLERANCE = 75;
 
@@ -37,7 +38,7 @@ function direction(source, target) {
 
   if (diffHorizontal < 0) diffHorizontal *= -1;
   if (diffVertical < 0) diffVertical *= -1;
-  
+
   if (diffHorizontal > diffVertical)
 
   console.log(diffHorizontal, diffVertical);
@@ -52,6 +53,7 @@ function direction(source, target) {
 class Monitor {
   mousePosition;
   prevMousePosition;
+  targets = [];
 
   constructor() {
     document.addEventListener('mousemove', this.handleMouseMove);
@@ -60,7 +62,18 @@ class Monitor {
   handleMouseMove = e => {
     this.prevMousePosition = this.mousePosition;
     this.mousePosition = { x: e.pageX, y: e.pageY };
+    this.checkAim(e);
   };
+
+  checkAim(e) {
+    this.targets.forEach(([target, element]) => {
+      console.log(findCorners(e, element));
+    });
+  }
+
+  addTarget(target) {
+    this.targets.push([target, ReactDOM.findDOMNode(target)]);
+  }
 
   isAimingTarget(source, target) {
     source = ReactDOM.findDOMNode(source);

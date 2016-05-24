@@ -20,7 +20,16 @@ const liStyle = {
   whiteSpace: 'nowrap'
 };
 
-@target()
+@target(
+  {
+    mouseEnter: (props, component) => {
+      console.log('mouse enter');
+    },
+    mouseLeave: (props, component) => {
+      console.log('mouse leave');
+    }
+  }
+)
 class Submenu extends Component {
   render() {
     return (

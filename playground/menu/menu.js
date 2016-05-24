@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import menu from '../../src/menu';
 import Item from './item';
 
 const style = {
@@ -9,7 +8,6 @@ const style = {
   listStyle: 'none'
 };
 
-@menu()
 class Menu extends Component {
   render() {
     return (
