@@ -2,9 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import rect from './rect';
 import line, { position } from './line';
 import { corners, lines } from '../../src/corners';
+import aiming from '../../src/aim';
 
 class Corners extends Component {
   lines = [];
+  mousePosition;
+  prevMousePosition;
 
   componentDidMount() {
     this.draw(this.refs.svg);
@@ -13,13 +16,14 @@ class Corners extends Component {
   draw(svg) {
     let obj = new rect(svg, 200, 100, '400px', '400px');
     document.addEventListener('mousemove', e => this.drawLines(e, svg, obj));
-
-    //this.drawLines(svg, rect1, rect2);
-    //rect1.addEventListener('drag', () => this.drawLines(svg, rect1, rect2));
-    //rect2.addEventListener('drag', () => this.drawLines(svg, rect1, rect2));
   }
 
   drawLines(e, svg, rect) {
+    this.prevMousePosition = this.mousePosition;
+    this.mousePosition = { x: e.pageX, y: e.pageY };
+
+    aiming(e, this.mousePosition, this.prevMousePosition, rect);
+
     const l = lines(corners(e, rect), e, rect);
     if (!this.lines[0]) this.lines[0] = new line(svg);
     if (!this.lines[1]) this.lines[1] = new line(svg, 'blue');
