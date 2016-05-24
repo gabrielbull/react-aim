@@ -43,6 +43,11 @@ export function coordinates(lines, source, target) {
   source = source.getBoundingClientRect();
   target = target.getBoundingClientRect();
 
+  var doc = document.documentElement;
+  var left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+  var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
+
+
   let finalLines = [];
   lines.forEach(line => {
     let el = source;
@@ -50,16 +55,16 @@ export function coordinates(lines, source, target) {
     line.forEach(point => {
       switch (point) {
       case 'top-right':
-        finalLine.push({ x: el.left + el.width, y: el.top });
+        finalLine.push({ x: el.left + el.width + left, y: el.top + top });
         break;
       case 'top-left':
-        finalLine.push({ x: el.left, y: el.top });
+        finalLine.push({ x: el.left + left, y: el.top + top });
         break;
       case 'bottom-right':
-        finalLine.push({ x: el.left + el.width, y: el.top + el.height });
+        finalLine.push({ x: el.left + el.width + left, y: el.top + el.height + top });
         break;
       case 'bottom-left':
-        finalLine.push({ x: el.left, y: el.top + el.height });
+        finalLine.push({ x: el.left + left, y: el.top + el.height + top });
         break;
       }
       el = target;

@@ -11,7 +11,7 @@ document.body.style.width = '100%';
 document.body.style.height = '100%';
 
 document.body.innerHTML = `
-  <div id="main" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center"></div>
+  <div id="main" style="width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center"></div>
 `;
 
 ReactDOM.render(<Playground/>, document.getElementById('main'));

@@ -30,7 +30,7 @@ class Corners extends Component {
 
   render() {
     return (
-      <svg ref="svg" width="100%" height="100%"/>
+      <svg ref="svg" width="100vw" height="100vh" style={{ display: 'block' }}/>
     );
   }
 }
