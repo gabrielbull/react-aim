@@ -5,6 +5,8 @@ export default function (spec) {
   return function (WrappedComponent) {
     return class extends Component {
       aiming = false;
+      skipped = 0;
+      moveTimeout;
 
       constructor() {
         super();

@@ -19,30 +19,34 @@ class Monitor {
   checkAim(e) {
     this.targets.forEach(([target, element]) => {
       const distance = aiming(e, this.mousePosition, this.prevMousePosition, element);
+      if (target.moveTimeout) clearTimeout(target.moveTimeout);
       if (distance === true) {
       } else if (distance) {
+        target.skipped = 0;
         target.triggerAimMove(distance);
+
+        target.moveTimeout = setTimeout(() => {
+          target.triggerAimStop();
+          target.skipped = 0;
+        }, 100);
       } else {
-        target.triggerAimStop();
+        if (target.aiming) {
+          if (target.skipped < 2) {
+            target.skipped++;
+            target.moveTimeout = setTimeout(() => {
+              target.triggerAimStop();
+              target.skipped = 0;
+            }, 100);
+          } else {
+            target.triggerAimStop();
+          }
+        }
       }
     });
   }
 
   addTarget(target) {
     this.targets.push([target, ReactDOM.findDOMNode(target)]);
-  }
-
-  isAimingTarget(source, target) {
-    source = ReactDOM.findDOMNode(source);
-    target = ReactDOM.findDOMNode(target);
-
-    direction(source, target);
-
-    //var decreasingSlope = slope(loc, decreasingCorner);
-    //var increasingSlope = slope(loc, increasingCorner);
-    //var prevDecreasingSlope = slope(prevLoc, decreasingCorner);
-    //var prevIncreasingSlope = slope(prevLoc, increasingCorner);
-
   }
 }
 

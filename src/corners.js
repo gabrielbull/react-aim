@@ -26,7 +26,7 @@ export function corners(source, target) {
   if (hor === 1 && ver === 1) return ['bottom-left', 'top-right'];
 }
 
-export function position(corners, target) {
+export function boundaries(corners, target) {
   target = target.getBoundingClientRect();
 
   var doc = document.documentElement;

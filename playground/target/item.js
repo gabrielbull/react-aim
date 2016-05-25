@@ -46,7 +46,6 @@ class Item extends Component {
 
     if (this.state.distance) {
       style.backgroundColor = 'rgb(' + (255 - Math.round(255 / this.state.maxDistance * this.state.distance)) + ', 0, 0)';
-      console.log(style.backgroundColor);
     }
 
     return (
