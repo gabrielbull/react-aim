@@ -30,10 +30,19 @@ export function corners(source, target) {
 
 export function boundaries(corners, source, target) {
   target = target.getBoundingClientRect();
-  source = {
-    left: source.pageX,
-    top: source.pageY
-  };
+
+  if (!source) return [];
+  else if (source instanceof Event) {
+    source = {
+      left: source.pageX,
+      top: source.pageY
+    };
+  } else if (source.x) {
+    source = {
+      left: source.x,
+      top: source.y
+    };
+  }
 
   const dist = distance({ x: target.left + target.width / 2, y: target.top + target.height / 2 }, { x: source.left, y: source.top });
   const tolerance = Math.round(dist / 10);

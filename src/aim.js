@@ -63,16 +63,24 @@ export function bullseye(corners, boundaries, mousePosition) {
   }
 }
 
+function formatPoints(points) {
+  const finalPoints = [];
+  for (let i = 0, len = points.length; i < len; ++i) {
+    finalPoints.push([points[i].x, points[i].y]);
+  }
+  return finalPoints;
+}
+
 export default function aiming(e, mousePosition, prevMousePosition, target) {
   const corners = findCorners(e, target);
-  const bound = boundaries(corners, mousePosition, target);
+  const bound = boundaries(corners, prevMousePosition, target);
 
-  if (!prevMousePosition || !bound[0] && !bound[1]) return true;
-
+  if (!prevMousePosition) return true;
+  
   if (
     pointInPolygon(
       [mousePosition.x, mousePosition.y],
-      [[prevMousePosition.x, prevMousePosition.y], [bound[0].x, bound[0].y], [bound[1].x, bound[1].y]]
+      formatPoints(bound)
     )
   ) {
     const dist = Math.round(distance(mousePosition, bullseye(corners, bound, mousePosition)));

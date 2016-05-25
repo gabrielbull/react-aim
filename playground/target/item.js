@@ -46,9 +46,10 @@ class Item extends Component {
 
     if (this.state.over) {
       style.backgroundColor = 'rgb(255, 100, 100)';
-      style.boxShadow = '0 0 20px rgba(255, 100, 100, 0.4)';
+      style.boxShadow = '0 0 0 1px rgba(255, 0, 0, 1), 0 0 20px rgba(255, 100, 100, 0.4)';
     } else if (this.state.distance) {
       const perc = (1 - 1 / this.state.maxDistance * this.state.distance);
+      style.boxShadow = '0 0 0 1px rgba(255, 0, 0, 1)';
       style.backgroundColor = 'rgb(' + Math.round(perc * 255) + ', ' + Math.round(perc * 100) + ', ' + Math.round(perc * 100) + ')';
     }
 
