@@ -24,11 +24,10 @@ class Monitor {
       } else if (distance) {
         target.skipped = 0;
         target.triggerAimMove(distance);
-
         target.moveTimeout = setTimeout(() => {
           target.triggerAimStop();
           target.skipped = 0;
-        }, 100);
+        }, 200);
       } else {
         if (target.aiming) {
           if (target.skipped < 2) {
@@ -47,6 +46,16 @@ class Monitor {
 
   addTarget(target) {
     this.targets.push([target, ReactDOM.findDOMNode(target)]);
+  }
+
+  requestMouseOver(source) {
+    return true;
+  }
+
+  mouseOver(event, component) {
+    const rect = ReactDOM.findDOMNode(component).getBoundingClientRect();
+    return (event.pageX >= rect.left && event.pageX <= rect.left + rect.width) &&
+      (event.pageY >= rect.top && event.pageY <= rect.top + rect.height);
   }
 }
 

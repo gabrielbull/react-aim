@@ -4,10 +4,10 @@ import target from '../../src/target';
 @target(
   {
     mouseEnter: (props, component) => {
-      console.log('mouse enter');
+      component.setState({ over: true });
     },
     mouseLeave: (props, component) => {
-      console.log('mouse leave');
+      component.setState({ over: false });
     },
     aimMove: (props, component, distance) => {
       component.setState({ distance });
@@ -31,7 +31,7 @@ class Item extends Component {
 
   constructor() {
     super();
-    this.state = { distance: null, maxDistance: null }
+    this.state = { distance: null, maxDistance: null, over: false }
   }
 
   render() {
@@ -44,8 +44,12 @@ class Item extends Component {
       backgroundColor: 'rgb(0, 0, 0)'
     };
 
-    if (this.state.distance) {
-      style.backgroundColor = 'rgb(' + (255 - Math.round(255 / this.state.maxDistance * this.state.distance)) + ', 0, 0)';
+    if (this.state.over) {
+      style.backgroundColor = 'rgb(255, 100, 100)';
+      style.boxShadow = '0 0 20px rgba(255, 100, 100, 0.4)';
+    } else if (this.state.distance) {
+      const perc = (1 - 1 / this.state.maxDistance * this.state.distance);
+      style.backgroundColor = 'rgb(' + Math.round(perc * 255 / 2) + ', ' + Math.round(perc * 50) + ', ' + Math.round(perc * 50) + ')';
     }
 
     return (
