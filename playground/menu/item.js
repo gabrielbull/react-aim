@@ -3,7 +3,7 @@ import source from '../../src/source';
 import Submenu from './submenu';
 
 const style = {
-  padding: '6px 60px',
+  padding: '26px 60px',
   borderBottom: '1px solid black',
   position: 'relative'
 };

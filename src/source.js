@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import mouseOver from './utils/mouseOver';
 import monitor from './monitor'
 
 export default function (target, spec) {
@@ -10,50 +9,69 @@ export default function (target, spec) {
 
       constructor() {
         super();
-        this.target = target;
+        this._target = target;
         this.spec = spec;
       }
 
+      get target() {
+        if (typeof this._target === 'function') return this._target(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+        return null;
+      }
+
+      buffer = (e, cb, timeout = 0) => {
+        setTimeout(() => cb(e), timeout);
+      };
+
       componentDidMount() {
         const element = ReactDOM.findDOMNode(this);
-        element.addEventListener('mousemove', this.handleMouseMove);
+        element.addEventListener('mousemove', e => this.buffer(e, this.handleMouseMove));
       }
 
       componentWillUnmount() {
         const element = ReactDOM.findDOMNode(this);
-        element.removeEventListener('mousemove', this.handleMouseMove);
+        element.removeEventListener('mousemove', e => this.buffer(e, this.handleMouseMove));
       }
 
       trackMouseLeave() {
         const element = ReactDOM.findDOMNode(this);
-        document.addEventListener('mousemove', this.handleMouseMove);
-        element.removeEventListener('mousemove', this.handleMouseMove);
+        document.addEventListener('mousemove', e => this.buffer(e, this.handleMouseMove));
+        document.addEventListener('mouseout', e => this.buffer(e, this.handleMouseOut));
+        element.removeEventListener('mousemove', e => this.buffer(e, this.handleMouseMove));
       }
 
       untrackMouseLeave() {
         const element = ReactDOM.findDOMNode(this);
-        document.removeEventListener('mousemove', this.handleMouseMove);
-        element.addEventListener('mousemove', this.handleMouseMove);
+        document.removeEventListener('mousemove', e => this.buffer(e, this.handleMouseMove));
+        document.removeEventListener('mouseout',e => this.buffer(e, this.handleMouseOut));
+        element.addEventListener('mousemove',e => this.buffer(e, this.handleMouseMove));
       }
 
-      handleMouseMove = e => {
-        const target = this.target(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
-        if (this.isOver && target) {
-          monitor.isAimingTarget(this, target);
-        }
-
-        if (mouseOver(e, this)) {
-          if (!this.isOver) {
-            this.isOver = true;
-            this.triggerMouseEnter();
-            this.trackMouseLeave();
-          }
+      handleMouseOut = e => {
+        if (e.toElement == null && e.relatedTarget == null) {
+          this.handleMouseLeave(e);
         } else {
-          if (this.isOver) {
-            this.isOver = false;
-            this.triggerMouseLeave();
-            this.untrackMouseLeave();
-          }
+          this.handleMouseMove(e);
+        }
+      };
+
+      handleMouseMove = e => {
+        if (monitor.mouseOver(e, this)) this.handleMouseEnter(e);
+        else this.handleMouseLeave(e);
+      };
+
+      handleMouseEnter = e => {
+        if (!this.isOver && monitor.requestMouseEnter(this)) {
+          this.isOver = true;
+          this.triggerMouseEnter();
+          this.trackMouseLeave();
+        }
+      };
+
+      handleMouseLeave = e => {
+        if (this.isOver && monitor.requestMouseLeave(this)) {
+          this.isOver = false;
+          this.triggerMouseLeave();
+          this.untrackMouseLeave();
         }
       };
 

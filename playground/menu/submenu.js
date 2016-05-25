@@ -31,14 +31,49 @@ const liStyle = {
   }
 )
 class Submenu extends Component {
+  constructor() {
+    super();
+    this.state = { highlight: null }
+  }
+
   render() {
     return (
       <ul style={style}>
-        <li style={liStyle}>item 1</li>
-        <li style={liStyle}>item 2</li>
-        <li style={liStyle}>item 3</li>
-        <li style={liStyle}>item 4</li>
-        <li style={liStyle}>item 5</li>
+        <li
+          style={{ ...liStyle, ...(this.state.highlight === 0 ? { backgroundColor: 'blue' } : {}) }}
+          onMouseEnter={() => this.setState({ highlight: 0 })}
+          onMouseLeave={() => this.setState({ highlight: null })}
+        >
+          item 1
+        </li>
+        <li
+          style={{ ...liStyle, ...(this.state.highlight === 1 ? { backgroundColor: 'blue' } : {}) }}
+          onMouseEnter={() => this.setState({ highlight: 1 })}
+          onMouseLeave={() => this.setState({ highlight: null })}
+        >
+          item 2
+        </li>
+        <li
+          style={{ ...liStyle, ...(this.state.highlight === 2 ? { backgroundColor: 'blue' } : {}) }}
+          onMouseEnter={() => this.setState({ highlight: 2 })}
+          onMouseLeave={() => this.setState({ highlight: null })}
+        >
+          item 3
+        </li>
+        <li
+          style={{ ...liStyle, ...(this.state.highlight === 3 ? { backgroundColor: 'blue' } : {}) }}
+          onMouseEnter={() => this.setState({ highlight: 3 })}
+          onMouseLeave={() => this.setState({ highlight: null })}
+        >
+          item 4
+        </li>
+        <li
+          style={{ ...liStyle, ...(this.state.highlight === 4 ? { backgroundColor: 'blue' } : {}) }}
+          onMouseEnter={() => this.setState({ highlight: 4 })}
+          onMouseLeave={() => this.setState({ highlight: null })}
+        >
+          item 5
+        </li>
       </ul>
     );
   }

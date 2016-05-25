@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import monitor from './monitor'
-import mouseOver from './utils/mouseOver';
 
 export default function (spec) {
   return function (WrappedComponent) {
@@ -31,23 +30,40 @@ export default function (spec) {
       trackMouseLeave() {
         const element = ReactDOM.findDOMNode(this);
         document.addEventListener('mousemove', this.handleMouseMove);
+        document.addEventListener('mouseout', this.handleMouseOut);
         element.removeEventListener('mousemove', this.handleMouseMove);
       }
 
       untrackMouseLeave() {
         const element = ReactDOM.findDOMNode(this);
         document.removeEventListener('mousemove', this.handleMouseMove);
+        document.removeEventListener('mouseout', this.handleMouseOut);
         element.addEventListener('mousemove', this.handleMouseMove);
       }
 
+      handleMouseOut = e => {
+        if (e.toElement == null && e.relatedTarget == null) {
+          this.handleMouseLeave(e);
+        } else {
+          this.handleMouseMove(e);
+        }
+      };
+
       handleMouseMove = e => {
-        if (monitor.mouseOver(e, this) && monitor.requestMouseOver(this)) {
-          if (!this.isOver) {
-            this.isOver = true;
-            this.trackMouseLeave();
-            this.triggerMouseEnter();
-          }
-        } else if (this.isOver) {
+        if (monitor.mouseOver(e, this)) this.handleMouseEnter(e);
+        else this.handleMouseLeave(e);
+      };
+
+      handleMouseEnter = e => {
+        if (!this.isOver) {
+          this.isOver = true;
+          this.trackMouseLeave();
+          this.triggerMouseEnter();
+        }
+      };
+
+      handleMouseLeave = e => {
+        if (this.isOver) {
           this.isOver = false;
           this.untrackMouseLeave();
           this.triggerMouseLeave();

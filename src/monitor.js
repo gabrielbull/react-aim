@@ -5,6 +5,9 @@ class Monitor {
   mousePosition;
   prevMousePosition;
   targets = [];
+  targetsAiming = [];
+  isOver = null;
+  mouseEnterRequests = [];
 
   constructor() {
     document.addEventListener('mousemove', this.handleMouseMove);
@@ -17,27 +20,33 @@ class Monitor {
   };
 
   checkAim(e) {
+    this.targetsAiming = [];
     this.targets.forEach(([target, element]) => {
       const distance = aiming(e, this.mousePosition, this.prevMousePosition, element);
       if (target.moveTimeout) clearTimeout(target.moveTimeout);
       if (distance === true) {
+        this.targetsAiming.push(target);
       } else if (distance) {
+        this.targetsAiming.push(target);
         target.skipped = 0;
         target.triggerAimMove(distance);
         target.moveTimeout = setTimeout(() => {
           target.triggerAimStop();
           target.skipped = 0;
+          this.rerunRequests();
         }, 200);
       } else {
         if (target.aiming) {
-          if (target.skipped < 2) {
+          if (target.skipped < 20) {
             target.skipped++;
             target.moveTimeout = setTimeout(() => {
               target.triggerAimStop();
               target.skipped = 0;
-            }, 100);
+              this.rerunRequests();
+            }, 200);
           } else {
             target.triggerAimStop();
+            this.rerunRequests();
           }
         }
       }
@@ -48,14 +57,54 @@ class Monitor {
     this.targets.push([target, ReactDOM.findDOMNode(target)]);
   }
 
-  requestMouseOver(source) {
+  requestMouseEnter(source) {
+    const target = source.target;
+    if (target) {
+      for (let i = 0, len = this.targetsAiming.length; i < len; ++i) {
+        if (this.targetsAiming[i] === target) {
+          if (this.isOver && this.isOver !== source) this.handleMouseOut(this.isOver);
+          this.isOver = source;
+          return true;
+        }
+      }
+    }
+    if (this.targetsAiming.length) {
+      this.addMouseEnterRequest(source);
+      return false;
+    }
+    console.log(this.targetsAiming.length);
+    if (this.isOver && this.isOver !== source) this.handleMouseOut(this.isOver);
+    this.isOver = source;
     return true;
+  }
+
+  requestMouseLeave(source) {
+    const target = source.target;
+    if (target && target.isOver) return false;
+    else if (this.mouseEnterRequests.length === 0 && this.targetsAiming.length === 0) {
+      return true;
+    }
+    return false;
+  }
+
+  handleMouseOut(source) {
+    console.log(source);
   }
 
   mouseOver(event, component) {
     const rect = ReactDOM.findDOMNode(component).getBoundingClientRect();
-    return (event.pageX >= rect.left && event.pageX <= rect.left + rect.width) &&
-      (event.pageY >= rect.top && event.pageY <= rect.top + rect.height);
+    const left = rect.left >= 0 ? rect.left : 0;
+    const top = rect.top >= 0 ? rect.top : 0;
+    return (event.pageX >= left && event.pageX <= left + rect.width) &&
+      (event.pageY >= top && event.pageY <= top + rect.height);
+  }
+
+  addMouseEnterRequest(source) {
+
+  }
+
+  rerunRequests() {
+    //console.log(this.mouseEnterRequests);
   }
 }
 
