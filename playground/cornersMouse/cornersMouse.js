@@ -1,13 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import rect from './rect';
 import line, { position } from './line';
-import { corners, lines } from '../../src/corners';
-import aiming from '../../src/aim';
+import { corners, boundaries as getBoundaries } from '../../src/corners';
 
 class Corners extends Component {
   lines = [];
-  mousePosition;
-  prevMousePosition;
 
   componentDidMount() {
     this.draw(this.refs.svg);
@@ -15,21 +12,24 @@ class Corners extends Component {
 
   draw(svg) {
     let obj = new rect(svg, 200, 100, '400px', '400px');
-    document.addEventListener('mousemove', e => this.drawLines(e, svg, obj));
+    document.addEventListener('mousemove', e => this.drawBoundaries(e, svg, obj));
   }
 
-  drawLines(e, svg, rect) {
-    this.prevMousePosition = this.mousePosition;
-    this.mousePosition = { x: e.pageX, y: e.pageY };
+  drawBoundaries(e, svg, rect) {
+    const colors = ['blue', 'red', 'red', 'red', 'red'];
+    const boundaries = getBoundaries(corners(e, rect), e, rect);
+    let lastIndex = -1;
+    for (let i = 0, len = boundaries.length; i < len; ++i) {
+      let prevIndex = i - 1 < 0 ? boundaries.length - 1 : i - 1;
 
-    aiming(e, this.mousePosition, this.prevMousePosition, rect);
-
-    const l = lines(corners(e, rect), e, rect);
-    if (!this.lines[0]) this.lines[0] = new line(svg);
-    if (!this.lines[1]) this.lines[1] = new line(svg, 'blue');
-
-    if (l[0] && l[0][0]) position(this.lines[0], l[0][0].x, l[0][0].y, l[0][1].x, l[0][1].y);
-    if (l[1] && l[1][0]) position(this.lines[1], l[1][0].x, l[1][0].y, l[1][1].x, l[1][1].y);
+      if (!this.lines[i]) this.lines[i] = new line(svg, colors[i]);
+      position(this.lines[i], boundaries[prevIndex].x, boundaries[prevIndex].y, boundaries[i].x, boundaries[i].y);
+      lastIndex = i;
+    }
+    for (let i = lastIndex + 1, len = this.lines.length; i < len; ++i) {
+      this.lines[i].parentNode.removeChild(this.lines[i]);
+    }
+    this.lines = this.lines.slice(0, lastIndex + 1);
   }
 
   render() {

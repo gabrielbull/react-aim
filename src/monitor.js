@@ -72,7 +72,6 @@ class Monitor {
       this.addMouseEnterRequest(source);
       return false;
     }
-    console.log(this.targetsAiming.length);
     if (this.isOver && this.isOver !== source) this.handleMouseOut(this.isOver);
     this.isOver = source;
     return true;
@@ -88,7 +87,7 @@ class Monitor {
   }
 
   handleMouseOut(source) {
-    console.log(source);
+    source.handleMouseLeave();
   }
 
   mouseOver(event, component) {

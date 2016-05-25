@@ -49,7 +49,7 @@ class Item extends Component {
       style.boxShadow = '0 0 20px rgba(255, 100, 100, 0.4)';
     } else if (this.state.distance) {
       const perc = (1 - 1 / this.state.maxDistance * this.state.distance);
-      style.backgroundColor = 'rgb(' + Math.round(perc * 255 / 2) + ', ' + Math.round(perc * 50) + ', ' + Math.round(perc * 50) + ')';
+      style.backgroundColor = 'rgb(' + Math.round(perc * 255) + ', ' + Math.round(perc * 100) + ', ' + Math.round(perc * 100) + ')';
     }
 
     return (

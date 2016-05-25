@@ -1,3 +1,5 @@
+import { distance } from './aim';
+
 function inside(source, targetMin, targetMax) {
   if (source >= targetMin && source <= targetMax) return 0;
   else if (source > targetMin) return -1;
@@ -26,66 +28,58 @@ export function corners(source, target) {
   if (hor === 1 && ver === 1) return ['bottom-left', 'top-right'];
 }
 
-export function boundaries(corners, target) {
+export function boundaries(corners, source, target) {
   target = target.getBoundingClientRect();
-
-  var doc = document.documentElement;
-  var left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
-  var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-
-  let positions = [];
-  corners.forEach(corner => {
-    switch (corner) {
-    case 'top-right':
-      positions.push({ x: target.left + target.width + left, y: target.top + top });
-      break;
-    case 'top-left':
-      positions.push({ x: target.left + left, y: target.top + top });
-      break;
-    case 'bottom-right':
-      positions.push({ x: target.left + target.width + left, y: target.top + target.height + top });
-      break;
-    case 'bottom-left':
-      positions.push({ x: target.left + left, y: target.top + target.height + top });
-      break;
-    }
-  });
-
-  return positions;
-}
-
-export function lines(corners, source, target) {
   source = {
     left: source.pageX,
     top: source.pageY
   };
-  target = target.getBoundingClientRect();
+
+  const dist = distance({ x: target.left + target.width / 2, y: target.top + target.height / 2 }, { x: source.left, y: source.top });
+  const tolerance = Math.round(dist / 10);
+  const position = {
+    left: target.left - tolerance,
+    top: target.top - tolerance,
+    width: target.width + tolerance * 2,
+    height: target.height + tolerance * 2
+  };
 
   var doc = document.documentElement;
   var left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
   var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
 
-  let lines = [];
+  let first = true;
+  let positions = [];
   corners.forEach(corner => {
-    const line = [{ x: source.left, y: source.top }];
     switch (corner) {
     case 'top-right':
-      line.push({ x: target.left + target.width + left, y: target.top + top });
+      if (first) positions.push({ x: target.left + target.width + left, y: target.top + top });
+      positions.push({ x: position.left + position.width + left, y: position.top + top });
+      if (!first) positions.push({ x: target.left + target.width + left, y: target.top + top });
       break;
     case 'top-left':
-      line.push({ x: target.left + left, y: target.top + top });
+      if (first) positions.push({ x: target.left + left, y: target.top + top });
+      positions.push({ x: position.left + left, y: position.top + top });
+      if (!first) positions.push({ x: target.left + left, y: target.top + top });
       break;
     case 'bottom-right':
-      line.push({ x: target.left + target.width + left, y: target.top + target.height + top });
+      if (first) positions.push({ x: target.left + target.width + left, y: target.top + target.height + top });
+      positions.push({ x: position.left + position.width + left, y: position.top + position.height + top });
+      if (!first) positions.push({ x: target.left + target.width + left, y: target.top + target.height + top });
       break;
     case 'bottom-left':
-      line.push({ x: target.left + left, y: target.top + target.height + top });
+      if (first) positions.push({ x: target.left + left, y: target.top + target.height + top });
+      positions.push({ x: position.left + left, y: position.top + position.height + top });
+      if (!first) positions.push({ x: target.left + left, y: target.top + target.height + top });
       break;
     }
-    lines.push(line);
+    if (first) {
+      positions.push({ x: source.left, y: source.top });
+    }
+    first = false;
   });
 
-  return lines;
+  return positions;
 }
 
 export default corners;

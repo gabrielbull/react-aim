@@ -1,13 +1,13 @@
 import findCorners, { boundaries } from './corners';
 import pointInPolygon from './utils/pointInPolygon';
 
-function distance(source, target) {
+export function distance(source, target) {
   const a = source.x - target.x;
   const b = source.y - target.y;
   return Math.sqrt(a * a + b * b);
 }
 
-function side(corners) {
+export function side(corners) {
   if (corners[0] === 'top-right' && corners[1] === 'bottom-right') return 'right';
   else if (corners[0] === 'top-left' && corners[1] === 'bottom-right') return 'top-right';
   else if (corners[0] === 'top-left' && corners[1] === 'top-right') return 'top';
@@ -18,7 +18,7 @@ function side(corners) {
   else if (corners[0] === 'top-right' && corners[1] === 'bottom-left') return 'bottom-right';
 }
 
-function bullseye(corners, boundaries, mousePosition) {
+export function bullseye(corners, boundaries, mousePosition) {
   switch(side(corners)) {
   case 'right':
     return {
@@ -65,7 +65,7 @@ function bullseye(corners, boundaries, mousePosition) {
 
 export default function aiming(e, mousePosition, prevMousePosition, target) {
   const corners = findCorners(e, target);
-  const bound = boundaries(corners, target, mousePosition);
+  const bound = boundaries(corners, mousePosition, target);
 
   if (!prevMousePosition || !bound[0] && !bound[1]) return true;
 
