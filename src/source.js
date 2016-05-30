@@ -69,6 +69,12 @@ export default function (target, spec) {
 
       handleMouseLeave = e => {
         if (this.isOver && monitor.requestMouseLeave(this)) {
+          this.forceMouseLeave();
+        }
+      };
+
+      forceMouseLeave = () => {
+        if (this.isOver) {
           this.isOver = false;
           this.triggerMouseLeave();
           this.untrackMouseLeave();

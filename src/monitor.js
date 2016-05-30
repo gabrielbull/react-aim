@@ -7,7 +7,7 @@ class Monitor {
   targets = [];
   targetsAiming = [];
   isOver = null;
-  mouseEnterRequests = [];
+  pendingMouseEnterRequest;
 
   constructor() {
     document.addEventListener('mousemove', this.handleMouseMove);
@@ -20,35 +20,12 @@ class Monitor {
   };
 
   checkAim(e) {
-    this.targetsAiming = [];
     this.targets.forEach(([target, element]) => {
       const distance = aiming(e, this.mousePosition, this.prevMousePosition, element);
-      if (target.moveTimeout) clearTimeout(target.moveTimeout);
-      if (distance === true) {
-        this.targetsAiming.push(target);
-      } else if (distance) {
-        this.targetsAiming.push(target);
-        target.skipped = 0;
+      if (distance !== true && distance) {
         target.triggerAimMove(distance);
-        target.moveTimeout = setTimeout(() => {
-          target.triggerAimStop();
-          target.skipped = 0;
-          this.rerunRequests();
-        }, 200);
-      } else {
-        if (target.aiming) {
-          if (target.skipped < 20) {
-            target.skipped++;
-            target.moveTimeout = setTimeout(() => {
-              target.triggerAimStop();
-              target.skipped = 0;
-              this.rerunRequests();
-            }, 200);
-          } else {
-            target.triggerAimStop();
-            this.rerunRequests();
-          }
-        }
+      } else if (!distance) {
+        target.triggerAimStop();
       }
     });
   }
@@ -80,14 +57,17 @@ class Monitor {
   requestMouseLeave(source) {
     const target = source.target;
     if (target && target.isOver) return false;
-    else if (this.mouseEnterRequests.length === 0 && this.targetsAiming.length === 0) {
-      return true;
+    else if (this.targetsAiming.length) {
+      for (let i = 0, len = this.targetsAiming.length; i < len; ++i) {
+        if (this.targetsAiming[i] === target) return false;
+      }
     }
-    return false;
+    return true;
   }
 
   handleMouseOut(source) {
-    source.handleMouseLeave();
+    this.isOver = null;
+    source.forceMouseLeave();
   }
 
   mouseOver(event, component) {
@@ -99,11 +79,19 @@ class Monitor {
   }
 
   addMouseEnterRequest(source) {
-
+    this.pendingMouseEnterRequest = source;
   }
 
-  rerunRequests() {
-    //console.log(this.mouseEnterRequests);
+  fulfillMouseEnterRequest() {
+    if (this.pendingMouseEnterRequest) {
+      if (this.isOver && this.isOver !== this.pendingMouseEnterRequest) {
+        console.log('outtt with you');
+        this.handleMouseOut(this.isOver);
+      }
+      this.isOver = this.pendingMouseEnterRequest;
+      this.pendingMouseEnterRequest.triggerMouseEnter();
+      this.pendingMouseEnterRequest = null;
+    }
   }
 }
 

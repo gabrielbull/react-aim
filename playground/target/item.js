@@ -13,10 +13,10 @@ import target from '../../src/target';
       component.setState({ distance });
     },
     aimStart: (props, component, distance) => {
-      component.setState({ distance, maxDistance: distance });
+      component.setState({ distance });
     },
     aimStop: (props, component) => {
-      component.setState({ distance: null, maxDistance: null });
+      component.setState({ distance: null });
     }
   }
 )
@@ -31,7 +31,7 @@ class Item extends Component {
 
   constructor() {
     super();
-    this.state = { distance: null, maxDistance: null, over: false }
+    this.state = { distance: null, over: false }
   }
 
   render() {
@@ -48,9 +48,8 @@ class Item extends Component {
       style.backgroundColor = 'rgb(255, 100, 100)';
       style.boxShadow = '0 0 0 1px rgba(255, 0, 0, 1), 0 0 20px rgba(255, 100, 100, 0.4)';
     } else if (this.state.distance) {
-      const perc = (1 - 1 / this.state.maxDistance * this.state.distance);
       style.boxShadow = '0 0 0 1px rgba(255, 0, 0, 1)';
-      style.backgroundColor = 'rgb(' + Math.round(perc * 255) + ', ' + Math.round(perc * 100) + ', ' + Math.round(perc * 100) + ')';
+      style.backgroundColor = 'rgb(' + Math.round(this.state.distance * 255) + ', ' + Math.round(this.state.distance * 100) + ', ' + Math.round(this.state.distance * 100) + ')';
     }
 
     return (

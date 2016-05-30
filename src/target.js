@@ -6,9 +6,11 @@ export default function (spec) {
   return function (WrappedComponent) {
     return class extends Component {
       aiming = false;
-      skipped = 0;
-      moveTimeout;
+      skippedStops = 0;
+      stopTimeout;
       isOver = false;
+      maxDistance;
+      prevDistance;
 
       constructor() {
         super();
@@ -22,7 +24,7 @@ export default function (spec) {
       }
 
       componentWillUnmount() {
-        //monitor.removeTarget(this);
+        monitor.removeTarget(this);
         const element = ReactDOM.findDOMNode(this);
         element.removeEventListener('mousemove', this.handleMouseMove);
       }
@@ -71,23 +73,48 @@ export default function (spec) {
       };
 
       triggerAimMove(distance) {
-        if (!this.aiming) {
-          this.aiming = true;
-          if (typeof this.spec.aimStart === 'function') {
-            this.spec.aimStart(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
-          }
-        }
+        if (!this.maxDistance) {
+          this.maxDistance = distance;
+          if (this.aiming) this.triggerAimStop(true);
+        } else {
+          distance = Math.round((1 - 1 / this.maxDistance * distance) * 1000) / 1000;
+          if (this.prevDistance < distance) {
+            if (!this.aiming) {
+              this.aiming = true;
+              if (typeof this.spec.aimStart === 'function') {
+                this.spec.aimStart(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
+              }
+            }
 
-        if (typeof this.spec.aimMove === 'function') {
-          this.spec.aimMove(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
+            this.skippedStops = 0;
+            if (this.stopTimeout) clearTimeout(this.stopTimeout);
+            this.stopTimeout = setTimeout(() => this.triggerAimStop(true), 200);
+
+            if (typeof this.spec.aimMove === 'function') {
+              this.spec.aimMove(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
+            }
+          }
+          this.prevDistance = distance;
         }
       }
 
-      triggerAimStop() {
+      triggerAimStop(force = false) {
+        if (this.stopTimeout) clearTimeout(this.stopTimeout);
         if (this.aiming) {
-          this.aiming = false;
-          if (typeof this.spec.aimStop === 'function') {
-            this.spec.aimStop(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+          const doStop = () => {
+            this.skippedStops = 0;
+            this.maxDistance = null;
+            this.aiming = false;
+            if (typeof this.spec.aimStop === 'function') {
+              this.spec.aimStop(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+            }
+          };
+
+          if (!force && this.skippedStops < 10) {
+            this.skippedStops++;
+            this.stopTimeout = setTimeout(() => doStop(), 100);
+          } else {
+            doStop();
           }
         }
       }
