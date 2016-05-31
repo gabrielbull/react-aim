@@ -14,7 +14,7 @@ export default function (target, spec) {
       }
 
       get target() {
-        if (typeof this._target === 'function') return this._target(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+        if (typeof this._target === 'function' && this.refs.wrappedComponent) return this._target(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
         return null;
       }
 
