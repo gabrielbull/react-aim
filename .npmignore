@@ -1,13 +1,13 @@
-/node_modules
-/playground
-/test
 /.idea
 /.babelrc
 /.codeclimate.yml
 /.editorconfig
 /.eslintrc
+/.gitignore
 /.npmignore
 /.travis.yml
 /npm-debug.log
 /src
-
+/node_modules
+/playground
+/test
