@@ -10,6 +10,12 @@
 
 Determine the cursor aim for triggering mouse events.
 
+## Demo
+
+Try the [demo here](http://gabrielbull.github.io/react-aim/).
+
+![Example](https://rawgit.com/gabrielbull/react-aim/master/example.gif)
+
 ## Installation
 
 > npm install react-aim --save
