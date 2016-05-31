@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import monitor from './monitor'
 
@@ -64,7 +64,7 @@ export default function (target, spec) {
         else this.handleMouseLeave(e);
       };
 
-      handleMouseEnter = e => {
+      handleMouseEnter = () => {
         if (!this.isOver) {
           monitor.requestMouseEnter(this)
             .then(() => {
@@ -80,7 +80,7 @@ export default function (target, spec) {
         this.trackMouseLeave();
       };
 
-      handleMouseLeave = e => {
+      handleMouseLeave = () => {
         if (this.isOver) {
           monitor.requestMouseLeave(this)
             .then(() => this.forceMouseLeave())
