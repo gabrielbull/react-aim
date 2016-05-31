@@ -38,7 +38,7 @@ class Playground extends Component {
         <div style={style}>
           <label>
             <input type="radio" name="example" value="1" checked={this.state.example === '1'} onChange={() => this.change('1')}/>
-            Corners Mouse
+            Zone
           </label>
           <br/>
           <label>
@@ -48,7 +48,7 @@ class Playground extends Component {
           <br/>
           <label>
             <input type="radio" name="example" value="3" checked={this.state.example === '3'} onChange={() => this.change('3')}/>
-            Target
+            Targets
           </label>
         </div>
 

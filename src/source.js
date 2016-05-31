@@ -22,30 +22,33 @@ export default function (target, spec) {
         setTimeout(() => cb(e), timeout);
       };
 
+      bufferHandleMouseMove = e => this.buffer(e, this.handleMouseMove);
+      bufferHandleMouseOut = e => this.buffer(e, this.handleMouseOut);
+
       componentDidMount() {
         const element = ReactDOM.findDOMNode(this);
-        element.addEventListener('mousemove', e => this.buffer(e, this.handleMouseMove));
+        element.addEventListener('mousemove', this.bufferHandleMouseMove);
       }
 
       componentWillUnmount() {
         const element = ReactDOM.findDOMNode(this);
-        element.removeEventListener('mousemove', e => this.buffer(e, this.handleMouseMove));
-        document.removeEventListener('mousemove', e => this.buffer(e, this.handleMouseMove));
-        document.removeEventListener('mouseout', e => this.buffer(e, this.handleMouseOut));
+        element.removeEventListener('mousemove', this.bufferHandleMouseMove);
+        document.removeEventListener('mousemove', this.bufferHandleMouseMove);
+        document.removeEventListener('mouseout', this.bufferHandleMouseOut);
       }
 
       trackMouseLeave() {
         const element = ReactDOM.findDOMNode(this);
-        document.addEventListener('mousemove', e => this.buffer(e, this.handleMouseMove));
-        document.addEventListener('mouseout', e => this.buffer(e, this.handleMouseOut));
-        element.removeEventListener('mousemove', e => this.buffer(e, this.handleMouseMove));
+        document.addEventListener('mousemove', this.bufferHandleMouseMove);
+        document.addEventListener('mouseout', this.bufferHandleMouseOut);
+        element.removeEventListener('mousemove', this.bufferHandleMouseMove);
       }
 
       untrackMouseLeave() {
         const element = ReactDOM.findDOMNode(this);
-        document.removeEventListener('mousemove', e => this.buffer(e, this.handleMouseMove));
-        document.removeEventListener('mouseout',e => this.buffer(e, this.handleMouseOut));
-        element.addEventListener('mousemove',e => this.buffer(e, this.handleMouseMove));
+        document.removeEventListener('mousemove', this.bufferHandleMouseMove);
+        document.removeEventListener('mouseout',this.bufferHandleMouseOut);
+        element.addEventListener('mousemove',this.bufferHandleMouseMove);
       }
 
       handleMouseOut = e => {
