@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "playground": "./node_modules/.bin/webpack-dev-server --config ./playground/webpack.config.js --colors --inline --port 3000",
+    "build": "gulp copy-playground && PROD_DEV=1 webpack && gulp bundle",
+    "playground": "./node_modules/.bin/webpack-dev-server --config ./webpack.config.js --colors --inline --port 3000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -20,6 +21,7 @@
     "gulp": "^3.9.1",
     "gulp-git": "^1.7.2",
     "gulp-replace": "^0.5.4",
+    "gulp-uglify": "^1.5.3",
     "html-webpack-plugin": "^2.19.0",
     "rimraf": "^2.5.2",
     "webpack": "^1.13.1",
