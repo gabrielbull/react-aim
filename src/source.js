@@ -97,13 +97,13 @@ export default function (target, spec) {
       };
 
       triggerMouseEnter() {
-        if (typeof this.spec.mouseEnter === 'function') {
+        if (typeof this.spec !== 'undefined' && typeof this.spec.mouseEnter === 'function') {
           this.spec.mouseEnter(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
         }
       }
 
       triggerMouseLeave() {
-        if (typeof this.spec.mouseLeave === 'function') {
+        if (typeof this.spec !== 'undefined' && typeof this.spec.mouseLeave === 'function') {
           this.spec.mouseLeave(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
         }
       }

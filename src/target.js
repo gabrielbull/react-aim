@@ -84,7 +84,7 @@ export default function (spec) {
           if (this.prevDistance < distance) {
             if (!this.aiming) {
               this.aiming = true;
-              if (typeof this.spec.aimStart === 'function') {
+              if (typeof this.spec !== 'undefined' && typeof this.spec.aimStart === 'function') {
                 this.spec.aimStart(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
               }
             }
@@ -96,7 +96,7 @@ export default function (spec) {
               if (!this.isOver) monitor.aimStopped();
             }, 100);
 
-            if (typeof this.spec.aimMove === 'function') {
+            if (typeof this.spec !== 'undefined' && typeof this.spec.aimMove === 'function') {
               this.spec.aimMove(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
             }
           }
@@ -111,7 +111,7 @@ export default function (spec) {
             this.skippedStops = 0;
             this.maxDistance = null;
             this.aiming = false;
-            if (typeof this.spec.aimStop === 'function') {
+            if (typeof this.spec !== 'undefined' && typeof this.spec.aimStop === 'function') {
               if (this.refs.wrappedComponent) {
                 this.spec.aimStop(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
               }
@@ -131,13 +131,13 @@ export default function (spec) {
       }
 
       triggerMouseEnter() {
-        if (typeof this.spec.mouseEnter === 'function') {
+        if (typeof this.spec !== 'undefined' && typeof this.spec.mouseEnter === 'function') {
           this.spec.mouseEnter(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
         }
       }
 
       triggerMouseLeave() {
-        if (typeof this.spec.mouseLeave === 'function') {
+        if (typeof this.spec !== 'undefined' && typeof this.spec.mouseLeave === 'function') {
           this.spec.mouseLeave(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
         }
       }
