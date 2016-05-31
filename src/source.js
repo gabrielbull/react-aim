@@ -30,6 +30,8 @@ export default function (target, spec) {
       componentWillUnmount() {
         const element = ReactDOM.findDOMNode(this);
         element.removeEventListener('mousemove', e => this.buffer(e, this.handleMouseMove));
+        document.removeEventListener('mousemove', e => this.buffer(e, this.handleMouseMove));
+        document.removeEventListener('mouseout', e => this.buffer(e, this.handleMouseOut));
       }
 
       trackMouseLeave() {
@@ -60,16 +62,26 @@ export default function (target, spec) {
       };
 
       handleMouseEnter = e => {
-        if (!this.isOver && monitor.requestMouseEnter(this)) {
-          this.isOver = true;
-          this.triggerMouseEnter();
-          this.trackMouseLeave();
+        if (!this.isOver) {
+          monitor.requestMouseEnter(this)
+            .then(() => {
+              this.forceMouseEnter();
+            })
+            .catch(() => null);
         }
       };
 
+      forceMouseEnter = () => {
+        this.isOver = true;
+        this.triggerMouseEnter();
+        this.trackMouseLeave();
+      };
+
       handleMouseLeave = e => {
-        if (this.isOver && monitor.requestMouseLeave(this)) {
-          this.forceMouseLeave();
+        if (this.isOver) {
+          monitor.requestMouseLeave(this)
+            .then(() => this.forceMouseLeave())
+            .catch(() => null);
         }
       };
 

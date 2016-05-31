@@ -22,59 +22,46 @@ const liStyle = {
 
 @target(
   {
-    mouseEnter: (props, component) => {
-      console.log('mouse enter');
+    aimStart: (props, component) => {
+      component.setState({ aiming: true });
     },
-    mouseLeave: (props, component) => {
-      console.log('mouse leave');
+    aimStop: (props, component) => {
+      component.setState({ aiming: false });
     }
   }
 )
 class Submenu extends Component {
   constructor() {
     super();
-    this.state = { highlight: null }
+    this.state = { highlight: null, aiming: false }
   }
 
   render() {
+    const componentStyle = { ...style };
+    if (this.state.aiming) {
+      componentStyle.boxShadow = 'inset 0 0 0 1px red';
+    }
+
     return (
-      <ul style={style}>
-        <li
-          style={{ ...liStyle, ...(this.state.highlight === 0 ? { backgroundColor: 'blue' } : {}) }}
-          onMouseEnter={() => this.setState({ highlight: 0 })}
-          onMouseLeave={() => this.setState({ highlight: null })}
-        >
-          item 1
-        </li>
-        <li
-          style={{ ...liStyle, ...(this.state.highlight === 1 ? { backgroundColor: 'blue' } : {}) }}
-          onMouseEnter={() => this.setState({ highlight: 1 })}
-          onMouseLeave={() => this.setState({ highlight: null })}
-        >
-          item 2
-        </li>
-        <li
-          style={{ ...liStyle, ...(this.state.highlight === 2 ? { backgroundColor: 'blue' } : {}) }}
-          onMouseEnter={() => this.setState({ highlight: 2 })}
-          onMouseLeave={() => this.setState({ highlight: null })}
-        >
-          item 3
-        </li>
-        <li
-          style={{ ...liStyle, ...(this.state.highlight === 3 ? { backgroundColor: 'blue' } : {}) }}
-          onMouseEnter={() => this.setState({ highlight: 3 })}
-          onMouseLeave={() => this.setState({ highlight: null })}
-        >
-          item 4
-        </li>
-        <li
-          style={{ ...liStyle, ...(this.state.highlight === 4 ? { backgroundColor: 'blue' } : {}) }}
-          onMouseEnter={() => this.setState({ highlight: 4 })}
-          onMouseLeave={() => this.setState({ highlight: null })}
-        >
-          item 5
-        </li>
+      <ul style={componentStyle}>
+        {this.renderItem(0)}
+        {this.renderItem(1)}
+        {this.renderItem(2)}
+        {this.renderItem(3)}
+        {this.renderItem(4)}
       </ul>
+    );
+  }
+
+  renderItem(index) {
+    return (
+      <li
+        style={{ ...liStyle, ...(this.state.highlight === index ? { backgroundColor: 'blue' } : {}) }}
+        onMouseEnter={() => this.setState({ highlight: index })}
+        onMouseLeave={() => this.setState({ highlight: null })}
+      >
+        item {index+1}
+      </li>
     );
   }
 }

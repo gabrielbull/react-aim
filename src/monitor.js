@@ -5,12 +5,14 @@ class Monitor {
   mousePosition;
   prevMousePosition;
   targets = [];
-  targetsAiming = [];
-  isOver = null;
-  pendingMouseEnterRequest;
+  currentSourceOver = null;
+  lastEnterRequest;
+  lastLeaveRequest;
 
   constructor() {
-    document.addEventListener('mousemove', this.handleMouseMove);
+    if (typeof document !== 'undefined' && document.addEventListener) {
+      document.addEventListener('mousemove', this.handleMouseMove);
+    }
   }
 
   handleMouseMove = e => {
@@ -34,40 +36,52 @@ class Monitor {
     this.targets.push([target, ReactDOM.findDOMNode(target)]);
   }
 
-  requestMouseEnter(source) {
-    const target = source.target;
-    if (target) {
-      for (let i = 0, len = this.targetsAiming.length; i < len; ++i) {
-        if (this.targetsAiming[i] === target) {
-          if (this.isOver && this.isOver !== source) this.handleMouseOut(this.isOver);
-          this.isOver = source;
-          return true;
-        }
+  removeTarget(target) {
+    let index;
+    for (let i = 0, len = this.targets.length; i < len; ++i) {
+      if (this.targets[i][0] === target) {
+        index = i;
+        break;
       }
     }
-    if (this.targetsAiming.length) {
-      this.addMouseEnterRequest(source);
-      return false;
+    return this.targets = [
+      ...this.targets.slice(0, index),
+      ...this.targets.slice(index + 1)
+    ];
+  }
+
+  hasTargetAiming() {
+    for (let i = 0, len = this.targets.length; i < len; ++i) {
+      if (this.targets[i][0].aiming) {
+        return true;
+      }
     }
-    if (this.isOver && this.isOver !== source) this.handleMouseOut(this.isOver);
-    this.isOver = source;
-    return true;
+    return false;
+  }
+
+  requestMouseEnter(source) {
+    return new Promise((resolve, reject) => {
+      if (this.currentSourceOver && this.hasTargetAiming()) {
+        this.lastEnterRequest = source;
+        return reject();
+      }
+      this.lastEnterRequest = null;
+      this.currentSourceOver = source;
+      return resolve();
+    });
   }
 
   requestMouseLeave(source) {
-    const target = source.target;
-    if (target && target.isOver) return false;
-    else if (this.targetsAiming.length) {
-      for (let i = 0, len = this.targetsAiming.length; i < len; ++i) {
-        if (this.targetsAiming[i] === target) return false;
-      }
-    }
-    return true;
-  }
-
-  handleMouseOut(source) {
-    this.isOver = null;
-    source.forceMouseLeave();
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (source.target && (source.target.isOver || source.target.aiming)) {
+          this.lastLeaveRequest = source;
+          return reject();
+        }
+        this.lastLeaveRequest = null;
+        return resolve();
+      }, 0);
+    });
   }
 
   mouseOver(event, component) {
@@ -78,19 +92,23 @@ class Monitor {
       (event.pageY >= top && event.pageY <= top + rect.height);
   }
 
-  addMouseEnterRequest(source) {
-    this.pendingMouseEnterRequest = source;
-  }
+  aimStopped() {
+    if (this.lastEnterRequest && this.lastLeaveRequest) {
+      if (this.mouseOver({ pageX: this.mousePosition.x, pageY: this.mousePosition.y }, this.lastEnterRequest)) {
+        const enterSource = this.lastEnterRequest;
+        this.requestMouseEnter(enterSource)
+          .then(() => {
+            enterSource.forceMouseEnter();
+          })
+          .catch(() => null);
 
-  fulfillMouseEnterRequest() {
-    if (this.pendingMouseEnterRequest) {
-      if (this.isOver && this.isOver !== this.pendingMouseEnterRequest) {
-        console.log('outtt with you');
-        this.handleMouseOut(this.isOver);
+        const leaveSource = this.lastLeaveRequest;
+        this.requestMouseLeave(this.lastLeaveRequest)
+          .then(() => {
+            leaveSource.forceMouseLeave();
+          })
+          .catch(() => null);
       }
-      this.isOver = this.pendingMouseEnterRequest;
-      this.pendingMouseEnterRequest.triggerMouseEnter();
-      this.pendingMouseEnterRequest = null;
     }
   }
 }

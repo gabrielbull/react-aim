@@ -43,29 +43,3 @@ class Item extends Component {
 }
 
 export default Item;
-
-/*
- renderItem(num) {
- const style = { ...liStyle };
- let submenu;
- if (this.state.over === num) {
- style.background = 'blue';
- submenu = (
- <ul ref={'submenu' + num}>
- <li>submenu item 1</li>
- <li>submenu item 2</li>
- <li>submenu item 3</li>
- <li>submenu item 4</li>
- <li>submenu item 5</li>
- </ul>
- );
- }
-
- return (
- <li style={liStyle} onAimOver={() => console.log('hi')} aimFor={() => this.refs['submenu' + num]}>
- item {num}
- {submenu}
- </li>
- );
- }
-*/

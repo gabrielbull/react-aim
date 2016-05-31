@@ -27,6 +27,9 @@ export default function (spec) {
         monitor.removeTarget(this);
         const element = ReactDOM.findDOMNode(this);
         element.removeEventListener('mousemove', this.handleMouseMove);
+        document.removeEventListener('mousemove', this.handleMouseMove);
+        document.removeEventListener('mouseout', this.handleMouseOut);
+        clearTimeout(this.stopTimeout);
       }
 
       trackMouseLeave() {
@@ -88,7 +91,10 @@ export default function (spec) {
 
             this.skippedStops = 0;
             if (this.stopTimeout) clearTimeout(this.stopTimeout);
-            this.stopTimeout = setTimeout(() => this.triggerAimStop(true), 200);
+            this.stopTimeout = setTimeout(() => {
+              this.triggerAimStop(true);
+              if (!this.isOver) monitor.aimStopped();
+            }, 100);
 
             if (typeof this.spec.aimMove === 'function') {
               this.spec.aimMove(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
@@ -106,13 +112,18 @@ export default function (spec) {
             this.maxDistance = null;
             this.aiming = false;
             if (typeof this.spec.aimStop === 'function') {
-              this.spec.aimStop(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+              if (this.refs.wrappedComponent) {
+                this.spec.aimStop(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+              }
             }
           };
 
           if (!force && this.skippedStops < 10) {
             this.skippedStops++;
-            this.stopTimeout = setTimeout(() => doStop(), 100);
+            this.stopTimeout = setTimeout(() => {
+              doStop();
+              if (!this.isOver) monitor.aimStopped();
+            }, 100);
           } else {
             doStop();
           }
