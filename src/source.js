@@ -6,6 +6,7 @@ export default function (target, spec) {
   return function (WrappedComponent) {
     return class extends Component {
       isOver = false;
+      _isMounted = false;
 
       constructor() {
         super();
@@ -26,13 +27,21 @@ export default function (target, spec) {
       bufferHandleMouseOut = e => this.buffer(e, this.handleMouseOut);
 
       componentDidMount() {
+        this._isMounted = true;
         const element = ReactDOM.findDOMNode(this);
         element.addEventListener('mousemove', this.bufferHandleMouseMove);
       }
 
       componentWillUnmount() {
-        const element = ReactDOM.findDOMNode(this);
-        element.removeEventListener('mousemove', this.bufferHandleMouseMove);
+        this.unbindEvents();
+        this._isMounted = false;
+      }
+
+      unbindEvents() {
+        if (this._isMounted) {
+          const element = ReactDOM.findDOMNode(this);
+          element.removeEventListener('mousemove', this.bufferHandleMouseMove);
+        }
         document.removeEventListener('mousemove', this.bufferHandleMouseMove);
         document.removeEventListener('mouseout', this.bufferHandleMouseOut);
       }
@@ -52,6 +61,7 @@ export default function (target, spec) {
       }
 
       handleMouseOut = e => {
+        if (!this._isMounted) return this.unbindEvents();
         if (e.toElement == null && e.relatedTarget == null) {
           this.handleMouseLeave(e);
         } else {
@@ -60,6 +70,7 @@ export default function (target, spec) {
       };
 
       handleMouseMove = e => {
+        if (!this._isMounted) return this.unbindEvents();
         if (monitor.mouseOver(e, this)) this.handleMouseEnter(e);
         else this.handleMouseLeave(e);
       };
