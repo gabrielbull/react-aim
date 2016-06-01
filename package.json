@@ -1,7 +1,7 @@
 {
   "name": "react-aim",
   "author": "Gabriel Bull",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Determine the cursor aim for triggering mouse events.",
   "main": "./lib/index.js",
   "keywords": [
