@@ -81,7 +81,7 @@ export default function (spec) {
           if (this.aiming) this.triggerAimStop(true);
         } else {
           distance = Math.round((1 - 1 / this.maxDistance * distance) * 1000) / 1000;
-          if (this.prevDistance < distance) {
+          if (this.prevDistance < distance || this.aiming) {
             if (!this.aiming) {
               this.aiming = true;
               if (typeof this.spec !== 'undefined' && typeof this.spec.aimStart === 'function') {
@@ -91,6 +91,7 @@ export default function (spec) {
 
             this.skippedStops = 0;
             if (this.stopTimeout) clearTimeout(this.stopTimeout);
+
             this.stopTimeout = setTimeout(() => {
               this.triggerAimStop(true);
               if (!this.isOver) monitor.aimStopped();
@@ -99,7 +100,11 @@ export default function (spec) {
             if (typeof this.spec !== 'undefined' && typeof this.spec.aimMove === 'function') {
               this.spec.aimMove(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
             }
+          } else {
+            this.triggerAimStop(true);
+            if (!this.isOver) monitor.aimStopped();
           }
+
           this.prevDistance = distance;
         }
       }
@@ -108,6 +113,7 @@ export default function (spec) {
         if (this.stopTimeout) clearTimeout(this.stopTimeout);
         if (this.aiming) {
           const doStop = () => {
+            this.prevDistance = null;
             this.skippedStops = 0;
             this.maxDistance = null;
             this.aiming = false;

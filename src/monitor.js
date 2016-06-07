@@ -16,14 +16,14 @@ class Monitor {
   }
 
   handleMouseMove = e => {
-    this.prevMousePosition = this.mousePosition;
     this.mousePosition = { x: e.pageX, y: e.pageY };
     this.checkAim(e);
+    this.prevMousePosition = this.mousePosition;
   };
 
   checkAim(e) {
     this.targets.forEach(([target, element]) => {
-      const distance = aiming(e, this.mousePosition, this.prevMousePosition, element);
+      const distance = aiming(e, this.mousePosition, this.prevMousePosition, element, target.aiming);
       if (distance !== true && distance) {
         target.triggerAimMove(distance);
       } else if (!distance) {

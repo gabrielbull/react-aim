@@ -46,7 +46,7 @@ export function boundaries(corners, source, target, adjustment = false) {
     };
   }
 
-  let tolerance = adjustment !== false ? Math.round(adjustment / 15) : 0;
+  let tolerance = adjustment !== false ? Math.round(adjustment / 10) * 1.5 : 0;
   const position = {
     left: target.left - tolerance,
     top: target.top - tolerance,

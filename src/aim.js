@@ -71,12 +71,15 @@ function formatPoints(points) {
   return finalPoints;
 }
 
-export default function aiming(e, mousePosition, prevMousePosition, target) {
+export default function aiming(e, mousePosition, prevMousePosition, target, alreadyAiming) {
+  if (!prevMousePosition) return false;
+  else if (!alreadyAiming && mousePosition.x === prevMousePosition.x && mousePosition.y === prevMousePosition.y) {
+    return false;
+  }
+
   const corners = findCorners(e, target);
   const bound = boundaries(corners, prevMousePosition, target);
 
-  if (!prevMousePosition) return true;
-  
   if (
     pointInPolygon(
       [mousePosition.x, mousePosition.y],
