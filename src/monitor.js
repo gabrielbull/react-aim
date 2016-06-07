@@ -108,6 +108,13 @@ class Monitor {
             leaveSource.forceMouseLeave();
           })
           .catch(() => null);
+      } else if (!this.mouseOver({ pageX: this.mousePosition.x, pageY: this.mousePosition.y }, this.lastLeaveRequest)) {
+        const leaveSource = this.lastLeaveRequest;
+        this.requestMouseLeave(this.lastLeaveRequest)
+          .then(() => {
+            leaveSource.forceMouseLeave();
+          })
+          .catch(() => null);
       }
     }
   }

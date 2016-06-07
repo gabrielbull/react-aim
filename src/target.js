@@ -76,37 +76,30 @@ export default function (spec) {
       };
 
       triggerAimMove(distance) {
-        if (!this.maxDistance) {
-          this.maxDistance = distance;
-          if (this.aiming) this.triggerAimStop(true);
-        } else {
-          distance = Math.round((1 - 1 / this.maxDistance * distance) * 1000) / 1000;
-          if (this.prevDistance < distance || this.aiming) {
-            if (!this.aiming) {
-              this.aiming = true;
-              if (typeof this.spec !== 'undefined' && typeof this.spec.aimStart === 'function') {
-                this.spec.aimStart(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
-              }
+        if (!this.maxDistance) this.maxDistance = distance;
+        distance = Math.round((1 - 1 / this.maxDistance * distance) * 1000) / 1000;
+        if (this.prevDistance === null || this.prevDistance < distance || this.aiming) {
+          if (!this.aiming) {
+            this.aiming = true;
+            if (typeof this.spec !== 'undefined' && typeof this.spec.aimStart === 'function') {
+              this.spec.aimStart(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
             }
-
-            this.skippedStops = 0;
-            if (this.stopTimeout) clearTimeout(this.stopTimeout);
-
-            this.stopTimeout = setTimeout(() => {
-              this.triggerAimStop(true);
-              if (!this.isOver) monitor.aimStopped();
-            }, 100);
-
-            if (typeof this.spec !== 'undefined' && typeof this.spec.aimMove === 'function') {
-              this.spec.aimMove(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
-            }
-          } else {
-            this.triggerAimStop(true);
-            if (!this.isOver) monitor.aimStopped();
           }
 
-          this.prevDistance = distance;
+          this.skippedStops = 0;
+          if (this.stopTimeout) clearTimeout(this.stopTimeout);
+
+          this.stopTimeout = setTimeout(() => {
+            this.triggerAimStop(true);
+            if (!this.isOver) monitor.aimStopped();
+          }, 100);
+
+          if (typeof this.spec !== 'undefined' && typeof this.spec.aimMove === 'function') {
+            this.spec.aimMove(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
+          }
         }
+
+        this.prevDistance = distance;
       }
 
       triggerAimStop(force = false) {
