@@ -1,4 +1,4 @@
-import { distance } from './aim';
+import { distance, bullseye } from './aim';
 
 function inside(source, targetMin, targetMax) {
   if (source >= targetMin && source <= targetMax) return 0;
@@ -28,8 +28,10 @@ export function corners(source, target) {
   if (hor === 1 && ver === 1) return ['bottom-left', 'top-right'];
 }
 
-export function boundaries(corners, source, target) {
-  target = target.getBoundingClientRect();
+export function boundaries(corners, source, target, adjustment = false) {
+  if (target instanceof HTMLElement || target instanceof SVGElement) {
+    target = target.getBoundingClientRect();
+  }
 
   if (!source) return [];
   else if (source instanceof Event) {
@@ -44,8 +46,7 @@ export function boundaries(corners, source, target) {
     };
   }
 
-  const dist = distance({ x: target.left + target.width / 2, y: target.top + target.height / 2 }, { x: source.left, y: source.top });
-  const tolerance = Math.round(dist / 10);
+  let tolerance = adjustment !== false ? Math.round(adjustment / 15) : 0;
   const position = {
     left: target.left - tolerance,
     top: target.top - tolerance,
@@ -87,6 +88,14 @@ export function boundaries(corners, source, target) {
     }
     first = false;
   });
+
+  if (adjustment === false) {
+    const be = bullseye(corners, positions, { x: source.left, y: source.top });
+    if (be) {
+      const dist = Math.round(distance({ x: source.left, y: source.top }, be));
+      return boundaries(corners, source, target, dist);
+    }
+  }
 
   return positions;
 }
