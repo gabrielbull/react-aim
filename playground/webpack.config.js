@@ -20,7 +20,7 @@ module.exports = {
   resolve: {
     root: path.join(__dirname, '..'),
     alias: {
-      'react-aim/corners': path.join(__dirname, '..', 'src', 'corners'),
+      'react-aim/lib/corners': path.join(__dirname, '..', 'src', 'corners'),
       'react-aim': path.join(__dirname, '..')
     }
   },
