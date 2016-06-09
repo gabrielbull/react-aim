@@ -3,7 +3,7 @@ import rect from './rect';
 import line, { position } from './line';
 import { corners, boundaries as getBoundaries } from 'react-aim/corners';
 
-class Corners extends Component {
+class Zone extends Component {
   lines = [];
 
   componentDidMount() {
@@ -39,4 +39,4 @@ class Corners extends Component {
   }
 }
 
-export default Corners;
+export default Zone;

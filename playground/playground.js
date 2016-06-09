@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import CornersMouse from '../examples/cornersMouse/cornersMouse';
+import Zone from '../examples/zone/zone';
 import Menu from '../examples/menu/menu';
 import Target from '../examples/target/target';
 
@@ -28,9 +28,9 @@ class Playground extends Component {
   render() {
     let example;
     switch(this.state.example) {
-    case '1': example = <CornersMouse/>; break;
+    case '1': example = <Target/>; break;
     case '2': example = <Menu/>; break;
-    case '3': example = <Target/>; break;
+    case '3': example = <Zone/>; break;
     }
 
     return (
@@ -38,7 +38,7 @@ class Playground extends Component {
         <div style={style}>
           <label>
             <input type="radio" name="example" value="1" checked={this.state.example === '1'} onChange={() => this.change('1')}/>
-            Zone
+            Targets
           </label>
           <br/>
           <label>
@@ -48,8 +48,9 @@ class Playground extends Component {
           <br/>
           <label>
             <input type="radio" name="example" value="3" checked={this.state.example === '3'} onChange={() => this.change('3')}/>
-            Targets
+            Zone
           </label>
+          <br/>
         </div>
 
         {example}
