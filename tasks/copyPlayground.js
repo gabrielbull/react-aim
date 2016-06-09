@@ -22,6 +22,13 @@ var removeReactAim = function () {
   });
 };
 
+var removeExamples = function () {
+  return new Promise((resolve) => {
+    rimraf.sync('examples');
+    resolve();
+  });
+};
+
 var removePlayground = function () {
   return new Promise((resolve) => {
     rimraf.sync('playground');
@@ -29,12 +36,17 @@ var removePlayground = function () {
   });
 };
 
+var copyExamples = function () {
+  return new Promise((resolve) => {
+    gulp.src('./react-aim/examples/**/*')
+      .pipe(gulp.dest('./examples/'))
+      .on('end', resolve);
+  });
+};
+
 var copyPlayground = function () {
   return new Promise((resolve) => {
     gulp.src('./react-aim/playground/**/*')
-      .pipe(replace(/(\.\.\/)+src/g, 'react-aim/lib'))
-      .pipe(replace(/import target from 'react-aim\/lib\/target'/, 'import { target } from \'react-aim\''))
-      .pipe(replace(/import source from 'react-aim\/lib\/source'/, 'import { source } from \'react-aim\''))
       .pipe(gulp.dest('./playground/'))
       .on('end', resolve);
   });
@@ -42,8 +54,10 @@ var copyPlayground = function () {
 
 gulp.task('copy-playground', function (cb) {
   removeReactAim()
+    .then(removeExamples)
     .then(removePlayground)
     .then(cloneReactAim)
+    .then(copyExamples)
     .then(copyPlayground)
     .then(removeReactAim)
     .then(cb);
