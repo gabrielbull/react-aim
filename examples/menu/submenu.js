@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import target from '../../src/target';
+import { target } from 'react-aim';
 
 const style = {
   position: 'absolute',

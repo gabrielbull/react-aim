@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import source from '../../src/source';
+import { source } from 'react-aim';
 import Submenu from './submenu';
 
 const style = {

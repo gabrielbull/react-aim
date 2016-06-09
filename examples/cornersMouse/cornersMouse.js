@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import rect from './rect';
 import line, { position } from './line';
-import { corners, boundaries as getBoundaries } from '../../src/corners';
+import { corners, boundaries as getBoundaries } from 'react-aim/corners';
 
 class Corners extends Component {
   lines = [];

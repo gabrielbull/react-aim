@@ -17,6 +17,14 @@ module.exports = {
 
   devtool: 'source-map',
 
+  resolve: {
+    root: path.join(__dirname, '..'),
+    alias: {
+      'react-aim/corners': path.join(__dirname, '..', 'src', 'corners'),
+      'react-aim': path.join(__dirname, '..')
+    }
+  },
+
   module: {
     loaders: [
       {

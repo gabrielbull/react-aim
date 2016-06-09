@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import CornersMouse from './cornersMouse/cornersMouse';
-import Menu from './menu/menu';
-import Target from './target/target';
+import CornersMouse from '../examples/cornersMouse/cornersMouse';
+import Menu from '../examples/menu/menu';
+import Target from '../examples/target/target';
 
 const style = {
   zIndex: '1000',
