@@ -21,7 +21,7 @@ module.exports = {
     root: path.join(__dirname, '..'),
     alias: {
       'react-aim/lib/corners': path.join(__dirname, '..', 'src', 'corners'),
-      'react-aim': path.join(__dirname, '..')
+      'react-aim': path.join(__dirname, '..', 'src', 'index')
     }
   },
 

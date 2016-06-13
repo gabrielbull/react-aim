@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import monitor from './monitor'
 
-export default function (target, spec) {
+export default function (target, spec = null) {
+  if (spec === null && typeof target === 'object') {
+    spec = target;
+    target = null;
+  }
+
   return function (WrappedComponent) {
     return class extends Component {
       isOver = false;
