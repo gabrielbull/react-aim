@@ -2,10 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import Item from './item';
 
 const style = {
-  background: 'gray',
+  background: '#eee',
   margin: '0px',
   padding: '0px',
-  listStyle: 'none'
+  listStyle: 'none',
+  border: '1px solid #bbb',
+  boxShadow: '0 2px 8px 0 rgba(0, 0, 0, .2)'
 };
 
 class Menu extends Component {

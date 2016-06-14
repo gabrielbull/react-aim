@@ -87,7 +87,6 @@ import { source } from 'react-aim';
 import Submenu from './path/to/submenu';
 
 @source(
-  (props, component) => component.refs.submenu, // target
   {
     mouseEnter: (props, component) => component.setState({ over: true }),
     mouseLeave: (props, component) => component.setState({ over: false })

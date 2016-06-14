@@ -3,13 +3,16 @@ import { source } from 'react-aim';
 import Submenu from './submenu';
 
 const style = {
-  padding: '26px 60px',
-  borderBottom: '1px solid black',
-  position: 'relative'
+  padding: '7px 40px',
+  borderBottom: '1px solid #bbb',
+  position: 'relative',
+  whiteSpace: 'nowrap',
+  fontFamily: 'arial',
+  fontSize: '13px',
+  color: '#333'
 };
 
 @source(
-  (props, component) => component.refs.submenu,
   {
     mouseEnter: (props, component) => {
       component.setState({ over: true });
@@ -29,7 +32,8 @@ class Item extends Component {
     const componentStyle = { ...style };
     let submenu;
     if (this.state.over) {
-      componentStyle.background = 'blue';
+      componentStyle.background = '#007eff';
+      componentStyle.color = '#fff';
       submenu = <Submenu ref="submenu"/>;
     }
 

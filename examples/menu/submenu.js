@@ -1,23 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { target } from 'react-aim';
+import Item from './item';
 
 const style = {
   position: 'absolute',
   top: '0px',
   left: '100%',
+  background: '#eee',
   margin: '0px',
   padding: '0px',
   listStyle: 'none',
-  background: 'gray',
-  borderLeft: '1px solid black',
-  width: '160px'
-};
-
-const liStyle = {
-  padding: '6px 60px',
-  borderBottom: '1px solid black',
-  position: 'relative',
-  whiteSpace: 'nowrap'
+  border: '1px solid #bbb',
+  boxShadow: '0 2px 8px 0 rgba(0, 0, 0, .2)'
 };
 
 @target(
@@ -44,24 +38,12 @@ class Submenu extends Component {
 
     return (
       <ul style={componentStyle}>
-        {this.renderItem(0)}
-        {this.renderItem(1)}
-        {this.renderItem(2)}
-        {this.renderItem(3)}
-        {this.renderItem(4)}
+        <Item name="item 1"/>
+        <Item name="item 2"/>
+        <Item name="item 3"/>
+        <Item name="item 4"/>
+        <Item name="item 5"/>
       </ul>
-    );
-  }
-
-  renderItem(index) {
-    return (
-      <li
-        style={{ ...liStyle, ...(this.state.highlight === index ? { backgroundColor: 'blue' } : {}) }}
-        onMouseEnter={() => this.setState({ highlight: index })}
-        onMouseLeave={() => this.setState({ highlight: null })}
-      >
-        item {index+1}
-      </li>
     );
   }
 }
