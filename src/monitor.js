@@ -49,7 +49,7 @@ class Monitor {
     ];
   }
 
-  hasTargetAiming() {
+  hasAimedTarget() {
     for (let i = 0, len = this.targets.length; i < len; ++i) {
       if (this.targets[i][0].aiming) {
         return true;
@@ -58,7 +58,7 @@ class Monitor {
     return false;
   }
 
-  get aimingTargets() {
+  get aimedTargets() {
     let targets = [];
     for (let i = 0, len = this.targets.length; i < len; ++i) {
       if (this.targets[i][0].aiming) {
@@ -69,9 +69,9 @@ class Monitor {
 
   }
 
-  sourceIsTargetAimingChildren(source) {
+  sourceIsChildrenOfAimedTarget(source) {
     let result = false;
-    this.aimingTargets.forEach(target => {
+    this.aimedTargets.forEach(target => {
       if (target.aiming && target.hasChildrenSource(source)) result = true;
     });
     return result;
@@ -79,7 +79,7 @@ class Monitor {
 
   requestMouseEnter(source) {
     return new Promise((resolve, reject) => {
-      if (this.hasTargetAiming() && !this.sourceIsTargetAimingChildren(source)) {
+      if (this.hasAimedTarget() && !this.sourceIsChildrenOfAimedTarget(source)) {
         this.lastEnterRequest = source;
         return reject();
       }
@@ -91,7 +91,7 @@ class Monitor {
   requestMouseLeave(source) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        if (source.target && (source.target.isOver || source.target.aiming)) {
+        if (source.hasChildrenOver() || source.hasChildrenAimed()) {
           this.lastLeaveRequest = source;
           return reject();
         }

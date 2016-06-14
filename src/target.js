@@ -2,13 +2,19 @@ import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import monitor from './monitor'
 
-export default function (spec) {
+export default function (source, spec = null) {
+  if (spec === null && typeof source === 'object') {
+    spec = source;
+    source = null;
+  }
+
   return function (WrappedComponent) {
     return class extends Component {
+      _source;
       aiming = false;
       skippedStops = 0;
       stopTimeout;
-      isOver = false;
+      _isOver = false;
       maxDistance;
       prevDistance;
       childrenSources = [];
@@ -29,6 +35,7 @@ export default function (spec) {
 
       constructor() {
         super();
+        this._source = source;
         this.spec = spec;
       }
 
@@ -38,6 +45,33 @@ export default function (spec) {
 
       removeChildrenSource(source) {
         this.childrenSources = this.childrenSources.filter(item => item !== source);
+      }
+
+      get source() {
+        if (typeof this._source === 'function' && this.refs.wrappedComponent) return this._source(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+        return null;
+      }
+
+      isOver() {
+        return this._isOver;
+      }
+
+      hasChildrenOver() {
+        for (let i = 0, len = this.childrenSources.length; i < len; ++i) {
+          if (this.childrenSources[i].isOver() || this.childrenSources[i].hasChildrenOver()) return true;
+        }
+        return false;
+      }
+
+      isAimed() {
+        return this.aiming;
+      }
+
+      hasChildrenAimed() {
+        for (let i = 0, len = this.childrenSources.length; i < len; ++i) {
+          if (this.childrenSources[i].hasChildrenAimed()) return true;
+        }
+        return false;
       }
 
       hasChildrenSource(source) {
@@ -104,16 +138,16 @@ export default function (spec) {
       };
 
       handleMouseEnter = () => {
-        if (!this.isOver) {
-          this.isOver = true;
+        if (!this._isOver) {
+          this._isOver = true;
           this.trackMouseLeave();
           this.triggerMouseEnter();
         }
       };
 
       handleMouseLeave = () => {
-        if (this.isOver) {
-          this.isOver = false;
+        if (this._isOver) {
+          this._isOver = false;
           this.untrackMouseLeave();
           this.triggerMouseLeave();
         }
@@ -135,7 +169,7 @@ export default function (spec) {
 
           this.stopTimeout = setTimeout(() => {
             this.triggerAimStop(true);
-            if (!this.isOver) monitor.aimStopped();
+            if (!this._isOver) monitor.aimStopped();
           }, 100);
 
           if (typeof this.spec !== 'undefined' && typeof this.spec.aimMove === 'function') {
@@ -165,7 +199,7 @@ export default function (spec) {
             this.skippedStops++;
             this.stopTimeout = setTimeout(() => {
               doStop();
-              if (!this.isOver) monitor.aimStopped();
+              if (!this._isOver) monitor.aimStopped();
             }, 100);
           } else {
             doStop();

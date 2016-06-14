@@ -10,7 +10,7 @@ export default function (target, spec = null) {
 
   return function (WrappedComponent) {
     return class extends Component {
-      isOver = false;
+      _isOver = false;
       _isMounted = false;
       childrenTargets = [];
 
@@ -32,6 +32,28 @@ export default function (target, spec = null) {
         super();
         this._target = target;
         this.spec = spec;
+      }
+
+      isOver() {
+        return this._isOver;
+      }
+
+      hasChildrenOver() {
+        const target = this.target;
+        if (target && (target.isOver() || target.hasChildrenOver())) return true;
+        for (let i = 0, len = this.childrenTargets.length; i < len; ++i) {
+          if (this.childrenTargets[i].isOver() || this.childrenTargets[i].hasChildrenOver()) return true;
+        }
+        return false;
+      }
+
+      hasChildrenAimed() {
+        const target = this.target;
+        if (target && (target.isAimed() || target.hasChildrenAimed())) return true;
+        for (let i = 0, len = this.childrenTargets.length; i < len; ++i) {
+          if (this.childrenTargets[i].isAimed() || this.childrenTargets[i].hasChildrenAimed()) return true;
+        }
+        return false;
       }
 
       addChildrenTarget(target) {
@@ -112,7 +134,7 @@ export default function (target, spec = null) {
       };
 
       handleMouseEnter = () => {
-        if (!this.isOver) {
+        if (!this._isOver) {
           monitor.requestMouseEnter(this)
             .then(() => {
               this.forceMouseEnter();
@@ -122,13 +144,13 @@ export default function (target, spec = null) {
       };
 
       forceMouseEnter = () => {
-        this.isOver = true;
+        this._isOver = true;
         this.triggerMouseEnter();
         this.trackMouseLeave();
       };
 
       handleMouseLeave = () => {
-        if (this.isOver) {
+        if (this._isOver) {
           monitor.requestMouseLeave(this)
             .then(() => this.forceMouseLeave())
             .catch(() => null);
@@ -136,8 +158,8 @@ export default function (target, spec = null) {
       };
 
       forceMouseLeave = () => {
-        if (this.isOver) {
-          this.isOver = false;
+        if (this._isOver) {
+          this._isOver = false;
           this.triggerMouseLeave();
           this.untrackMouseLeave();
         }
