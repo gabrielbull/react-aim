@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import monitor from './monitor'
 
@@ -11,6 +11,10 @@ export default function (spec) {
       isOver = false;
       maxDistance;
       prevDistance;
+
+      static contextTypes = {
+        source: PropTypes.object
+      };
 
       constructor() {
         super();

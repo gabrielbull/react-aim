@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import monitor from './monitor'
 
@@ -12,6 +12,16 @@ export default function (target, spec = null) {
     return class extends Component {
       isOver = false;
       _isMounted = false;
+
+      static childContextTypes = {
+        source: PropTypes.object
+      };
+
+      getChildContext() {
+        return {
+          source: this
+        };
+      }
 
       constructor() {
         super();

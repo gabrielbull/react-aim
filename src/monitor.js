@@ -61,12 +61,12 @@ class Monitor {
 
   requestMouseEnter(source) {
     return new Promise((resolve, reject) => {
-      if (this.currentSourceOver && this.hasTargetAiming()) {
+      if (this.hasTargetAiming()) {
         this.lastEnterRequest = source;
         return reject();
       }
       this.lastEnterRequest = null;
-      this.currentSourceOver = source;
+      this.currentSourceOver = source; // seems uneeded
       return resolve();
     });
   }
@@ -79,6 +79,7 @@ class Monitor {
           return reject();
         }
         this.lastLeaveRequest = null;
+        //if (this.currentSourceOver === source) this.currentSourceOver = null;
         return resolve();
       }, 0);
     });
@@ -93,7 +94,31 @@ class Monitor {
   }
 
   aimStopped() {
-    if (this.lastEnterRequest && this.lastLeaveRequest) {
+    if (this.lastEnterRequest) {
+      if (this.mouseOver({ pageX: this.mousePosition.x, pageY: this.mousePosition.y }, this.lastEnterRequest)) {
+        const enterSource = this.lastEnterRequest;
+        this.requestMouseEnter(enterSource)
+          .then(() => {
+            this.lastEnterRequest = null;
+            enterSource.forceMouseEnter();
+          })
+          .catch(() => null);
+      }
+    }
+
+    if (this.lastLeaveRequest) {
+      if (!this.mouseOver({ pageX: this.mousePosition.x, pageY: this.mousePosition.y }, this.lastLeaveRequest)) {
+        const leaveSource = this.lastLeaveRequest;
+        this.requestMouseLeave(this.lastLeaveRequest)
+          .then(() => {
+            this.lastLeaveRequest = null;
+            leaveSource.forceMouseLeave();
+          })
+          .catch(() => null);
+      }
+    }
+
+    /*if (this.lastEnterRequest && this.lastLeaveRequest) {
       if (this.mouseOver({ pageX: this.mousePosition.x, pageY: this.mousePosition.y }, this.lastEnterRequest)) {
         const enterSource = this.lastEnterRequest;
         this.requestMouseEnter(enterSource)
@@ -116,7 +141,7 @@ class Monitor {
           })
           .catch(() => null);
       }
-    }
+    }*/
   }
 }
 
