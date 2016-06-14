@@ -12,9 +12,14 @@ export default function (target, spec = null) {
     return class extends Component {
       isOver = false;
       _isMounted = false;
+      childrenTargets = [];
 
       static childContextTypes = {
         source: PropTypes.object
+      };
+
+      static contextTypes = {
+        target: PropTypes.object
       };
 
       getChildContext() {
@@ -27,6 +32,14 @@ export default function (target, spec = null) {
         super();
         this._target = target;
         this.spec = spec;
+      }
+
+      addChildrenTarget(target) {
+        this.childrenTargets.push(target);
+      }
+
+      removeChildrenTarget(target) {
+        this.childrenTargets = this.childrenTargets.filter(item => item !== target);
       }
 
       get target() {
@@ -42,12 +55,20 @@ export default function (target, spec = null) {
       bufferHandleMouseOut = e => this.buffer(e, this.handleMouseOut);
 
       componentDidMount() {
+        if (this.context.target) {
+          this.context.target.addChildrenSource(this);
+        }
+
         this._isMounted = true;
         const element = ReactDOM.findDOMNode(this);
         element.addEventListener('mousemove', this.bufferHandleMouseMove);
       }
 
       componentWillUnmount() {
+        if (this.context.target) {
+          this.context.target.removeChildrenSource(this);
+        }
+
         this.unbindEvents();
         this._isMounted = false;
       }

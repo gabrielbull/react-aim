@@ -11,23 +11,63 @@ export default function (spec) {
       isOver = false;
       maxDistance;
       prevDistance;
+      childrenSources = [];
+
+      static childContextTypes = {
+        target: PropTypes.object
+      };
 
       static contextTypes = {
         source: PropTypes.object
       };
+
+      getChildContext() {
+        return {
+          target: this
+        };
+      }
 
       constructor() {
         super();
         this.spec = spec;
       }
 
+      addChildrenSource(source) {
+        this.childrenSources.push(source);
+      }
+
+      removeChildrenSource(source) {
+        this.childrenSources = this.childrenSources.filter(item => item !== source);
+      }
+
+      hasChildrenSource(source) {
+        if (this.childrenSources.includes(source)) return true;
+
+        let result = false;
+        this.childrenSources.forEach(item => {
+          item.childrenTargets.forEach(target => {
+            if (target.hasChildrenSource(source)) result = true;
+          })
+        });
+
+        return result;
+      }
+
       componentDidMount() {
+        if (this.context.source) {
+          this.context.source.addChildrenTarget(this);
+        }
+
         monitor.addTarget(this);
         const element = ReactDOM.findDOMNode(this);
         element.addEventListener('mousemove', this.handleMouseMove);
       }
 
       componentWillUnmount() {
+        if (this.context.source) {
+          this.context.source.removeChildrenTarget(this);
+        }
+
         monitor.removeTarget(this);
         const element = ReactDOM.findDOMNode(this);
         element.removeEventListener('mousemove', this.handleMouseMove);

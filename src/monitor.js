@@ -5,7 +5,6 @@ class Monitor {
   mousePosition;
   prevMousePosition;
   targets = [];
-  currentSourceOver = null;
   lastEnterRequest;
   lastLeaveRequest;
 
@@ -59,14 +58,32 @@ class Monitor {
     return false;
   }
 
+  get aimingTargets() {
+    let targets = [];
+    for (let i = 0, len = this.targets.length; i < len; ++i) {
+      if (this.targets[i][0].aiming) {
+        targets.push(this.targets[i][0]);
+      }
+    }
+    return targets;
+
+  }
+
+  sourceIsTargetAimingChildren(source) {
+    let result = false;
+    this.aimingTargets.forEach(target => {
+      if (target.aiming && target.hasChildrenSource(source)) result = true;
+    });
+    return result;
+  }
+
   requestMouseEnter(source) {
     return new Promise((resolve, reject) => {
-      if (this.hasTargetAiming()) {
+      if (this.hasTargetAiming() && !this.sourceIsTargetAimingChildren(source)) {
         this.lastEnterRequest = source;
         return reject();
       }
       this.lastEnterRequest = null;
-      this.currentSourceOver = source; // seems uneeded
       return resolve();
     });
   }
@@ -79,7 +96,6 @@ class Monitor {
           return reject();
         }
         this.lastLeaveRequest = null;
-        //if (this.currentSourceOver === source) this.currentSourceOver = null;
         return resolve();
       }, 0);
     });
@@ -117,31 +133,6 @@ class Monitor {
           .catch(() => null);
       }
     }
-
-    /*if (this.lastEnterRequest && this.lastLeaveRequest) {
-      if (this.mouseOver({ pageX: this.mousePosition.x, pageY: this.mousePosition.y }, this.lastEnterRequest)) {
-        const enterSource = this.lastEnterRequest;
-        this.requestMouseEnter(enterSource)
-          .then(() => {
-            enterSource.forceMouseEnter();
-          })
-          .catch(() => null);
-
-        const leaveSource = this.lastLeaveRequest;
-        this.requestMouseLeave(this.lastLeaveRequest)
-          .then(() => {
-            leaveSource.forceMouseLeave();
-          })
-          .catch(() => null);
-      } else if (!this.mouseOver({ pageX: this.mousePosition.x, pageY: this.mousePosition.y }, this.lastLeaveRequest)) {
-        const leaveSource = this.lastLeaveRequest;
-        this.requestMouseLeave(this.lastLeaveRequest)
-          .then(() => {
-            leaveSource.forceMouseLeave();
-          })
-          .catch(() => null);
-      }
-    }*/
   }
 }
 
