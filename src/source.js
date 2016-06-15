@@ -166,13 +166,13 @@ export default function (target, spec = null) {
       };
 
       triggerMouseEnter() {
-        if (typeof this.spec === 'object' && typeof this.spec.mouseEnter === 'function') {
+        if (typeof this.spec === 'object' && this.spec && typeof this.spec.mouseEnter === 'function') {
           this.spec.mouseEnter(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
         }
       }
 
       triggerMouseLeave() {
-        if (typeof this.spec === 'object' && typeof this.spec.mouseLeave === 'function') {
+        if (typeof this.spec === 'object' && this.spec && typeof this.spec.mouseLeave === 'function') {
           this.spec.mouseLeave(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
         }
       }
