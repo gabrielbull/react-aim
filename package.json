@@ -24,7 +24,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/gabrielbull/react-menu-buffer.git"
+    "url": "https://github.com/gabrielbull/react-aim.git"
   },
   "scripts": {
     "eslint": "./node_modules/.bin/eslint ./src ./test",

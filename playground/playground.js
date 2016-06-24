@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Zone from '../examples/zone/zone';
 import Menu from '../examples/menu/menu';
 import Target from '../examples/target/target';
+import Tooltip from '../examples/tooltip/tooltip';
 
 const style = {
   zIndex: '1000',
@@ -31,6 +32,7 @@ class Playground extends Component {
     case '1': example = <Target/>; break;
     case '2': example = <Menu/>; break;
     case '3': example = <Zone/>; break;
+    case '4': example = <Tooltip/>; break;
     }
 
     return (
@@ -49,6 +51,11 @@ class Playground extends Component {
           <label>
             <input type="radio" name="example" value="3" checked={this.state.example === '3'} onChange={() => this.change('3')}/>
             Zone
+          </label>
+          <br/>
+          <label>
+            <input type="radio" name="example" value="4" checked={this.state.example === '4'} onChange={() => this.change('4')}/>
+            Tooltip
           </label>
           <br/>
         </div>
