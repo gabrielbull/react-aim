@@ -102,11 +102,14 @@ class Monitor {
   }
 
   mouseOver(event, component) {
-    const rect = ReactDOM.findDOMNode(component).getBoundingClientRect();
-    const left = rect.left >= 0 ? rect.left : 0;
-    const top = rect.top >= 0 ? rect.top : 0;
-    return (event.pageX >= left && event.pageX <= left + rect.width) &&
-      (event.pageY >= top && event.pageY <= top + rect.height);
+    if (component._isMounted) {
+      const rect = ReactDOM.findDOMNode(component).getBoundingClientRect();
+      const left = rect.left >= 0 ? rect.left : 0;
+      const top = rect.top >= 0 ? rect.top : 0;
+      return (event.pageX >= left && event.pageX <= left + rect.width) &&
+        (event.pageY >= top && event.pageY <= top + rect.height);
+    }
+    return false;
   }
 
   aimStopped() {

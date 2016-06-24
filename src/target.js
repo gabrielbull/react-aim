@@ -18,6 +18,7 @@ export default function (source, spec = null) {
       maxDistance;
       prevDistance;
       childrenSources = [];
+      _isMounted = false;
 
       static childContextTypes = {
         target: PropTypes.object
@@ -92,6 +93,7 @@ export default function (source, spec = null) {
           this.context.source.addChildrenTarget(this);
         }
 
+        this._isMounted = true;
         monitor.addTarget(this);
         const element = ReactDOM.findDOMNode(this);
         element.addEventListener('mousemove', this.handleMouseMove);
@@ -102,6 +104,7 @@ export default function (source, spec = null) {
           this.context.source.removeChildrenTarget(this);
         }
 
+        this._isMounted = false;
         monitor.removeTarget(this);
         const element = ReactDOM.findDOMNode(this);
         element.removeEventListener('mousemove', this.handleMouseMove);

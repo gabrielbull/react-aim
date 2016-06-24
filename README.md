@@ -26,25 +26,23 @@ Try the [demo here](http://gabrielbull.github.io/react-aim/).
 import React, { Component } from 'react';
 import { target } from 'react-aim';
 
-@target(
-  {
-    mouseEnter: (props, component) => {
-      console.log('mouse enter');
-    },
-    mouseLeave: (props, component) => {
-      console.log('mouse leave');
-    },
-    aimMove: (props, component, distance) => {
-      console.log('aim move ' + Math.round(distance * 100)  + '%');
-    },
-    aimStart: (props, component, distance) => {
-      console.log('aim start');
-    },
-    aimStop: (props, component) => {
-      console.log('aim stop');
-    }
+@target({
+  mouseEnter: (props, component) => {
+    console.log('mouse enter');
+  },
+  mouseLeave: (props, component) => {
+    console.log('mouse leave');
+  },
+  aimMove: (props, component, distance) => {
+    console.log('aim move ' + Math.round(distance * 100)  + '%');
+  },
+  aimStart: (props, component, distance) => {
+    console.log('aim start');
+  },
+  aimStop: (props, component) => {
+    console.log('aim stop');
   }
-)
+})
 export default class extends Component {
   render() {
     return (
@@ -86,12 +84,10 @@ import React, { Component, PropTypes } from 'react';
 import { source } from 'react-aim';
 import Submenu from './path/to/submenu';
 
-@source(
-  {
-    mouseEnter: (props, component) => component.setState({ over: true }),
-    mouseLeave: (props, component) => component.setState({ over: false })
-  }
-)
+@source({
+  mouseEnter: (props, component) => component.setState({ over: true }),
+  mouseLeave: (props, component) => component.setState({ over: false })
+})
 export default class extends Component {
   constructor() {
     super();
