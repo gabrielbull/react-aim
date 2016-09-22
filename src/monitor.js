@@ -1,6 +1,24 @@
 import ReactDOM from 'react-dom';
 import aiming from './aim';
 
+function scrollPosition() {
+  const scrollTop = document.documentElement.scrollTop ?
+    document.documentElement.scrollTop : document.body.scrollTop;
+  const scrollLeft = document.documentElement.scrollLeft ?
+    document.documentElement.scrollLeft : document.body.scrollLeft;
+
+  return { scrollTop, scrollLeft };
+}
+
+function mousePosition(event) {
+  const sPos = scrollPosition();
+
+  const x = document.all ? event.clientX + sPos.scrollLeft : event.pageX;
+  const y = document.all ? event.clientY + sPos.scrollTop : event.pageY;
+
+  return { x, y };
+}
+
 class Monitor {
   mousePosition;
   prevMousePosition;
@@ -15,7 +33,7 @@ class Monitor {
   }
 
   handleMouseMove = e => {
-    this.mousePosition = { x: e.pageX, y: e.pageY };
+    this.mousePosition = mousePosition(e);
     this.checkAim(e);
     this.prevMousePosition = this.mousePosition;
   };
@@ -103,11 +121,15 @@ class Monitor {
 
   mouseOver(event, component) {
     if (component._isMounted) {
+      const mPos = mousePosition(event);
+      const sPos = scrollPosition();
+
       const rect = ReactDOM.findDOMNode(component).getBoundingClientRect();
-      const left = rect.left >= 0 ? rect.left : 0;
-      const top = rect.top >= 0 ? rect.top : 0;
-      return (event.pageX >= left && event.pageX <= left + rect.width) &&
-        (event.pageY >= top && event.pageY <= top + rect.height);
+      const left = rect.left + sPos.scrollLeft;
+      const top = rect.top + sPos.scrollTop;
+
+      return (mPos.x >= left && mPos.x <= left + rect.width) &&
+        (mPos.y >= top && mPos.y <= top + rect.height);
     }
     return false;
   }
