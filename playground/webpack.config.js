@@ -5,20 +5,19 @@ module.exports = {
   entry: path.join(__dirname, 'index.js'),
 
   output: {
-    path: './playground',
+    path: path.join(__dirname),
     filename: 'bundle.js',
     publicPath: '/'
   },
 
   devServer: {
     filename: 'index.js',
-    contentBase: './playground'
+    contentBase: path.join(__dirname)
   },
 
   devtool: 'source-map',
 
   resolve: {
-    root: path.join(__dirname, '..'),
     alias: {
       'react-aim/lib/corners': path.join(__dirname, '..', 'src', 'corners'),
       'react-aim': path.join(__dirname, '..', 'src', 'index')
@@ -26,11 +25,11 @@ module.exports = {
   },
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.(js)$/,
         exclude: /node_modules/,
-        loader: 'babel'
+        use: 'babel-loader'
       }
     ]
   },
