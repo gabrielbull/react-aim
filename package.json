@@ -1,9 +1,10 @@
 {
   "name": "react-aim",
   "author": "Gabriel Bull",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "description": "Determine the cursor aim for triggering mouse events.",
   "main": "./lib/index.js",
+  "types": "./index.d.ts",
   "keywords": [
     "react",
     "react-component",
@@ -40,6 +41,7 @@
     "react-dom": "^15.0 || ^16.0"
   },
   "devDependencies": {
+    "@types/react": "^15.0.22",
     "babel-core": "^6.24.1",
     "babel-eslint": "^7.2.2",
     "babel-loader": "^6.4.1",
@@ -49,6 +51,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "chai": "^3.5.0",
     "eslint": "^3.19.0",
+    "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-react": "^6.10.3",
     "html-webpack-plugin": "^2.28.0",
     "mocha": "^3.2.0",
