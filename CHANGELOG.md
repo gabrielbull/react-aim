@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.1 (April 17th, 2017)
+
+- Removed PropTypes import from playground
+
 ## 0.2.0 (April 17th, 2017)
 
 - Added prop-types package to be compatible with React 16

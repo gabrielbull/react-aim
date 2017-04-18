@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import Zone from '../examples/zone/zone';
 import Menu from '../examples/menu/menu';
 import Target from '../examples/target/target';
