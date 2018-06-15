@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.2 (June 15th, 2018)
+
+- Fixed top-position calculation of target 
+
 ## 0.2.1 (April 17th, 2017)
 
 - Removed PropTypes import from playground
