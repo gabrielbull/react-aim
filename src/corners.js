@@ -13,7 +13,7 @@ export function corners(source, target) {
   let ver, hor;
 
   hor = inside(source.left, target.left, target.left + target.width);
-  ver = inside(source.top, target.top, target.top + target.height);
+  ver = inside(source.top, target.top, source.top + target.height);
 
   if (hor === -1 && ver === -1) return ['top-right', 'bottom-left'];
   if (hor === -1 && ver === 0) return ['top-right', 'bottom-right'];
