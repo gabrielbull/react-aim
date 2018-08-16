@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import monitor from './monitor'
+import monitor from './monitor';
 
-export default function (source, spec = null) {
+export default function(source, spec = null) {
   if (spec === null && typeof source === 'object') {
     spec = source;
     source = null;
   }
 
-  return function (WrappedComponent) {
+  return function(WrappedComponent) {
     return class extends Component {
       _source;
       aiming = false;
@@ -50,7 +50,7 @@ export default function (source, spec = null) {
       }
 
       get source() {
-        if (typeof this._source === 'function' && this.refs.wrappedComponent) return this._source(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+        if (typeof this._source === 'function' && this.wrappedComponent) return this._source(this.wrappedComponent.props, this.wrappedComponent);
         return null;
       }
 
@@ -83,7 +83,7 @@ export default function (source, spec = null) {
         this.childrenSources.forEach(item => {
           item.childrenTargets.forEach(target => {
             if (target.hasChildrenSource(source)) result = true;
-          })
+          });
         });
 
         return result;
@@ -159,12 +159,12 @@ export default function (source, spec = null) {
 
       triggerAimMove(distance) {
         if (!this.maxDistance) this.maxDistance = distance;
-        distance = Math.round((1 - 1 / this.maxDistance * distance) * 1000) / 1000;
+        distance = Math.round((1 - (1 / this.maxDistance) * distance) * 1000) / 1000;
         if (this.prevDistance === null || this.prevDistance < distance || this.aiming) {
           if (!this.aiming) {
             this.aiming = true;
             if (typeof this.spec === 'object' && this.spec && typeof this.spec.aimStart === 'function') {
-              this.spec.aimStart(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
+              this.spec.aimStart(this.wrappedComponent.props, this.wrappedComponent, distance);
             }
           }
 
@@ -177,7 +177,7 @@ export default function (source, spec = null) {
           }, 100);
 
           if (typeof this.spec === 'object' && this.spec && typeof this.spec.aimMove === 'function') {
-            this.spec.aimMove(this.refs.wrappedComponent.props, this.refs.wrappedComponent, distance);
+            this.spec.aimMove(this.wrappedComponent.props, this.wrappedComponent, distance);
           }
         }
 
@@ -193,8 +193,8 @@ export default function (source, spec = null) {
             this.maxDistance = null;
             this.aiming = false;
             if (typeof this.spec === 'object' && this.spec && typeof this.spec.aimStop === 'function') {
-              if (this.refs.wrappedComponent) {
-                this.spec.aimStop(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+              if (this.wrappedComponent) {
+                this.spec.aimStop(this.wrappedComponent.props, this.wrappedComponent);
               }
             }
           };
@@ -213,24 +213,19 @@ export default function (source, spec = null) {
 
       triggerMouseEnter() {
         if (typeof this.spec === 'object' && this.spec && typeof this.spec.mouseEnter === 'function') {
-          this.spec.mouseEnter(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+          this.spec.mouseEnter(this.wrappedComponent.props, this.wrappedComponent);
         }
       }
 
       triggerMouseLeave() {
         if (typeof this.spec === 'object' && this.spec && typeof this.spec.mouseLeave === 'function') {
-          this.spec.mouseLeave(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+          this.spec.mouseLeave(this.wrappedComponent.props, this.wrappedComponent);
         }
       }
 
       render() {
-        return (
-          <WrappedComponent
-            ref="wrappedComponent"
-            {...this.props}
-          />
-        );
+        return <WrappedComponent ref={ref => (this.wrappedComponent = ref)} {...this.props} />;
       }
     };
-  }
+  };
 }

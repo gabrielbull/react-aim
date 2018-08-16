@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import monitor from './monitor'
+import monitor from './monitor';
 
-export default function (target, spec = null) {
+export default function(target, spec = null) {
   if (spec === null && typeof target === 'object') {
     spec = target;
     target = null;
   }
 
-  return function (WrappedComponent) {
+  return function(WrappedComponent) {
     return class extends Component {
       _isOver = false;
       _isMounted = false;
@@ -66,7 +66,7 @@ export default function (target, spec = null) {
       }
 
       get target() {
-        if (typeof this._target === 'function' && this.refs.wrappedComponent) return this._target(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+        if (typeof this._target === 'function' && this.wrappedComponent) return this._target(this.wrappedComponent.props, this.wrappedComponent);
         return null;
       }
 
@@ -115,8 +115,8 @@ export default function (target, spec = null) {
       untrackMouseLeave() {
         const element = ReactDOM.findDOMNode(this);
         document.removeEventListener('mousemove', this.bufferHandleMouseMove);
-        document.removeEventListener('mouseout',this.bufferHandleMouseOut);
-        element.addEventListener('mousemove',this.bufferHandleMouseMove);
+        document.removeEventListener('mouseout', this.bufferHandleMouseOut);
+        element.addEventListener('mousemove', this.bufferHandleMouseMove);
       }
 
       handleMouseOut = e => {
@@ -136,7 +136,8 @@ export default function (target, spec = null) {
 
       handleMouseEnter = () => {
         if (!this._isOver) {
-          monitor.requestMouseEnter(this)
+          monitor
+            .requestMouseEnter(this)
             .then(() => {
               this.forceMouseEnter();
             })
@@ -152,7 +153,8 @@ export default function (target, spec = null) {
 
       handleMouseLeave = () => {
         if (this._isOver) {
-          monitor.requestMouseLeave(this)
+          monitor
+            .requestMouseLeave(this)
             .then(() => this.forceMouseLeave())
             .catch(() => null);
         }
@@ -168,24 +170,19 @@ export default function (target, spec = null) {
 
       triggerMouseEnter() {
         if (typeof this.spec === 'object' && this.spec && typeof this.spec.mouseEnter === 'function') {
-          this.spec.mouseEnter(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+          this.spec.mouseEnter(this.wrappedComponent.props, this.wrappedComponent);
         }
       }
 
       triggerMouseLeave() {
         if (typeof this.spec === 'object' && this.spec && typeof this.spec.mouseLeave === 'function') {
-          this.spec.mouseLeave(this.refs.wrappedComponent.props, this.refs.wrappedComponent);
+          this.spec.mouseLeave(this.wrappedComponent.props, this.wrappedComponent);
         }
       }
 
       render() {
-        return (
-          <WrappedComponent
-            ref="wrappedComponent"
-            {...this.props}
-          />
-        );
+        return <WrappedComponent ref={ref => (this.wrappedComponent = ref)} {...this.props} />;
       }
     };
-  }
+  };
 }
